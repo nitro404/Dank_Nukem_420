@@ -1,0 +1,9 @@
+{
+	"name": "Dank Nukem 420: Blaze It!",
+	"conFileName": "DANK.CON",
+	"groupFileName": "DANK.GRP",
+	"dataPath": "Data",
+	"gamePath": "Environment",
+	"dosBoxPath": "DOSBox/DOSBox.exe",
+	"mapsterPath": "Data/mapster32.exe"
+}
