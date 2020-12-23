@@ -1,0 +1,458 @@
+action ALIZSTAND     0
+action ALIZWALKING     0   4  5  1  15
+action ALIZRUNNING     0   4  5  1  11
+action ALIZTHINK     20  2  5  1  40
+action ALIZSCREAM    30  1  5  1  2
+action ALIZJUMP      45  3  5  1  20
+action ALIZFALL      55  1  5
+action ALIZSHOOTING    70  2  5  1  7
+action ALIZDYING     60  6  1  1  15
+action ALIZLYINGDEAD   65  1
+action ALIZFROZEN     0  1  5
+
+move LIZWALKVEL 72
+move LIZRUNVEL 192
+move LIZJUMPVEL 184
+move LIZSTOP
+
+ai AILIZGETENEMY ALIZWALKING LIZWALKVEL seekplayer
+ai AILIZDODGE ALIZRUNNING LIZRUNVEL dodgebullet
+ai AILIZCHARGEENEMY ALIZRUNNING LIZRUNVEL seekplayer
+ai AILIZFLEENEMY ALIZWALKING LIZWALKVEL fleeenemy
+ai AILIZSHOOTENEMY ALIZSHOOTING LIZSTOP faceplayer
+ai AILIZJUMPENEMY ALIZJUMP LIZJUMPVEL jumptoplayer
+ai AILIZTHINK ALIZTHINK LIZSTOP faceplayerslow
+ai AILIZSHRUNK ALIZWALKING SHRUNKVELS fleeenemy
+ai AILIZGROW ALIZSTAND  LIZSTOP faceplayerslow
+ai AILIZSPIT ALIZSCREAM LIZSTOP faceplayerslow
+ai AILIZDYING ALIZDYING LIZSTOP faceplayer
+
+state lizseekstate
+
+  ifactornotstayput
+  {
+    ifcansee
+      ifp palive
+        ifpdistl 2048
+          ifcount 16
+            ifcanshoottarget
+    {
+      ai AILIZSHOOTENEMY
+      break
+    }
+    ifai AILIZCHARGEENEMY
+    {
+      ifcount 72
+        ifcanshoottarget
+      {
+        ai AILIZSHOOTENEMY
+        break
+      }
+      ifp phigher
+        ifpdistg 2048
+          ifrnd 6
+      {
+        ai AILIZJUMPENEMY
+        break
+      }
+    }
+    else
+      ifpdistg 4096
+    {
+      ifrnd 92
+      {
+        ifcount 48
+          ifcanshoottarget
+            ai AILIZSHOOTENEMY
+      }
+      else
+        ifcount 24
+      {
+        ai AILIZCHARGEENEMY
+        break
+      }
+    }
+
+    iffloordistl 16
+    {
+      ifcount 48
+        ifnotmoving
+          ifcansee
+      {
+        ai AILIZJUMPENEMY
+        break
+      }
+    }
+    else
+    {
+      ifpdistg 1280
+        ai AILIZJUMPENEMY
+      break
+    }
+
+    ifrnd 4
+      ifnotmoving
+        operate
+    else
+      ifrnd 1
+        ifbulletnear
+    {
+      ifgapzl 128
+        ai AILIZDODGE
+      else
+        ifactornotstayput
+      {
+        ifrnd 32
+          ai AILIZJUMPENEMY
+        else
+          ai AILIZDODGE
+      }
+    }
+  }
+  else
+  {
+    ifactioncount 16
+    {
+      ifp palive
+        ifrnd 32
+          ifcansee
+            ifcanshoottarget
+              ai AILIZSHOOTENEMY
+    }
+    ifcount 16
+      ifrnd 32
+        move LIZWALKVEL randomangle geth
+  }
+
+ends
+
+state lizshrunkstate
+  ifcount SHRUNKDONECOUNT
+    ai AILIZGETENEMY
+  else
+    ifcount SHRUNKCOUNT
+      sizeto 48 40
+  else
+    state genericshrunkcode
+ends
+
+state lizfleestate
+  ifcount 16
+  {
+    ifrnd 48
+      ifp palive
+        ifcansee
+          ai AILIZSPIT
+  }
+  else
+  {
+    iffloordistl 16 nullop
+    else
+      ai AILIZGETENEMY
+    break
+  }
+ends
+
+state lizthinkstate
+  ifrnd 8
+    soundonce CAPT_ROAM
+  ifactioncount 3
+  {
+    ifrnd 32
+      ifp palive
+        ifcansee
+          ai AILIZSPIT
+        else
+          ifrnd 96
+            ai AILIZGETENEMY
+  }
+  else
+    ifactioncount 2
+      ifrnd 1
+        spawn FECES
+  ifrnd 1
+    ifbulletnear
+  {
+    ifgapzl 96
+      ai AILIZDODGE
+    else
+    {
+      ifrnd 128
+        ai AILIZJUMPENEMY
+      else
+        ai AILIZDODGE
+    }
+  }
+ends
+
+state lizshootstate
+  ifcount 20
+    ifrnd 8
+  {
+    ifcansee
+      ifpdistl 2048
+    {
+      ifrnd 128
+        ai AILIZFLEENEMY
+      break
+    }
+    ifrnd 80
+      ai AILIZTHINK
+    else
+      ai AILIZGETENEMY
+  }
+  ifactioncount 2
+  {
+    ifcansee
+    {
+      ifcanshoottarget
+      {
+        sound CAPT_ATTACK
+        shoot SHOTSPARK1
+        resetactioncount
+      }
+      else
+        ai AILIZTHINK
+    }
+    else
+      ai AILIZGETENEMY
+  }
+ends
+
+state checklizhit
+  spawn BLOOD
+  ifai AILIZSHRUNK
+  {
+    addkills 1
+    sound SQUISHED
+    state standard_jibs
+    killit
+  }
+  ifdead
+  {
+    ifwasweapon FREEZEBLAST
+    {
+      sound SOMETHINGFROZE
+      spritepal 1
+      move 0
+      action ALIZFROZEN
+      strength 0
+      break
+    }
+
+    state drop_chaingun
+
+    ifwasweapon GROWSPARK
+    {
+      cstat 0
+      sound ACTOR_GROWING
+      ai AILIZGROW
+      break
+    }
+
+    addkills 1
+
+    ifwasweapon RPG
+    {
+      sound SQUISHED
+      state liz_body_jibs
+      state standard_jibs
+      killit
+    }
+    else
+      ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      state liz_body_jibs
+      state standard_jibs
+      killit
+    }
+    else
+    {
+      state rf
+      ai AILIZDYING
+      ifrnd 64
+        spawn BLOODPOOL
+    }
+    sound CAPT_DYING
+  }
+  else
+  {
+    sound CAPT_PAIN
+    ifwasweapon SHRINKSPARK
+    {
+      sound ACTOR_SHRINKING
+      ai AILIZSHRUNK
+      break
+    }
+    ifwasweapon GROWSPARK
+      sound EXPANDERHIT
+
+    state random_wall_jibs
+    ifp palive
+      ifcansee
+        ifcanshoottarget
+    {
+      ai AILIZSHOOTENEMY
+      break
+    }
+  }
+ends
+
+state lizjumpstate
+  ifaction ALIZFALL
+  {
+    iffloordistl 16
+      ai AILIZGETENEMY
+  }
+  else
+    ifactioncount 3
+      action ALIZFALL
+ends
+
+state lizdyingstate
+  ifaction ALIZLYINGDEAD
+  {
+    strength 0
+    ifhitweapon
+      ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      state standard_jibs
+      killit
+    }
+    ifcount RESPAWNACTORTIME
+      ifrespawn
+    {
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength LIZSTRENGTH
+      ai AILIZGETENEMY
+    }
+  }
+  else
+    ifai AILIZDYING
+      ifactioncount 6
+  {
+    iffloordistl 8
+      sound THUD
+    move LIZSTOP
+    action ALIZLYINGDEAD
+  }
+ends
+
+state lizdodgestate
+  ifcount 13
+    ai AILIZGETENEMY
+ends
+
+actor LIZMANSTAYPUT LIZSTRENGTH ai AILIZGETENEMY cactor LIZMAN enda
+actor LIZMANSPITTING LIZSTRENGTH ai AILIZSPIT cactor LIZMAN enda
+actor LIZMANJUMP LIZSTRENGTH ai AILIZJUMPENEMY cactor LIZMAN enda
+
+state lizcode
+  state checksquished
+  ifai 0
+    ai AILIZGETENEMY
+  else
+    ifaction ALIZLYINGDEAD
+  {
+    fall
+    state lizdyingstate
+    break
+  }
+  else
+    ifaction ALIZFROZEN
+  {
+    ifcount THAWTIME
+    {
+      ai AILIZGETENEMY
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      addkills 1
+
+      ifrnd 84
+        spawn BLOODPOOL
+      lotsofglass 30
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  else
+    ifai AILIZJUMPENEMY
+      state lizjumpstate
+  else
+  {
+    fall
+    ifai AILIZGETENEMY
+      state lizseekstate
+    else
+      ifai AILIZCHARGEENEMY
+        state lizseekstate
+    else
+      ifai AILIZDODGE
+        state lizdodgestate
+    else
+      ifai AILIZSHOOTENEMY
+        state lizshootstate
+    else
+      ifai AILIZFLEENEMY
+        state lizfleestate
+    else
+      ifai AILIZTHINK
+        state lizthinkstate
+    else
+      ifai AILIZSHRUNK
+        state lizshrunkstate
+    else
+      ifai AILIZGROW
+        state genericgrowcode
+    else
+      ifai AILIZDYING
+        state lizdyingstate
+    else
+      ifai AILIZSPIT
+    {
+      ifcount 26
+        ai AILIZGETENEMY
+      else
+        ifcount 18
+          ifrnd 96
+      {
+        shoot SPIT
+        sound LIZARD_SPIT
+      }
+    }
+  }
+
+  ifai AILIZSHRUNK
+    break
+  ifhitweapon
+    state checklizhit
+ends
+
+actor LIZMAN LIZSTRENGTH
+  fall
+  state lizcode
+enda

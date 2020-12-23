@@ -1,0 +1,6 @@
+action BLOODFRAMES 0 4 1 1 15
+actor BLOOD 0 BLOODFRAMES
+  sizeto 72 72 sizeto 72 72 sizeto 72 72
+  ifpdistg 3144 killit
+  ifactioncount 4 killit
+enda

@@ -1,0 +1,457 @@
+action APIGWALK     0  4 5 1 20
+action APIGRUN      0  4 5 1 11
+action APIGSHOOT    30 2 5 1 58
+action APIGCOCK     25 1 5 1 16
+action APIGSTAND    30 1 5 1 1
+action APIGDIVE     40 2 5 1 40
+action APIGDIVESHOOT  45 2 5 1 58
+action APIGDYING    55 5 1 1 15
+action APIGHIT      55 1 1 1 10
+action APIGDEAD     60 1 1 1 1
+action APIGFROZEN    0 1 5
+action APIGGROW      0
+
+
+move PIGWALKVELS 72
+move PIGRUNVELS 108
+move PIGSTOPPED
+
+ai AIPIGSEEKENEMY APIGWALK PIGWALKVELS seekplayer
+ai AIPIGSHOOTENEMY APIGSHOOT PIGSTOPPED faceplayer
+ai AIPIGFLEEENEMY APIGWALK PIGWALKVELS fleeenemy
+ai AIPIGSHOOT APIGSHOOT PIGSTOPPED faceplayer
+ai AIPIGDODGE APIGRUN PIGRUNVELS dodgebullet
+ai AIPIGCHARGE APIGRUN PIGRUNVELS seekplayer
+ai AIPIGDIVING APIGDIVE PIGSTOPPED faceplayer
+ai AIPIGDYING APIGDYING PIGSTOPPED faceplayer
+ai AIPIGSHRINK APIGWALK SHRUNKVELS fleeenemy
+ai AIPIGGROW APIGGROW PIGSTOPPED faceplayerslow
+ai AIPIGHIT APIGHIT PIGSTOPPED faceplayer
+
+state pigseekenemystate
+
+  ifai AIPIGCHARGE
+  {
+    ifcansee
+      ifpdistl 3084
+    {
+      ifnotmoving
+        ai AIPIGSEEKENEMY
+      else
+        ai AIPIGDIVING
+    }
+    break
+  }
+  else iffloordistl 32
+  {
+    ifpdistg 4096
+    {
+      ifactornotstayput
+      ai AIPIGCHARGE
+    }
+    ifrnd 8
+    {
+      ifbulletnear
+        ai AIPIGDODGE
+    }
+  }
+
+  ifrnd 128
+    ifcansee
+  {
+    ifai AIPIGDODGE
+    {
+      ifcount 32
+        ai AIPIGCHARGE
+          break
+    }
+    iffloordistl 32
+    {
+      ifpdistl 1024
+        ifp palive
+          ifcanshoottarget
+      {
+        ai AIPIGSHOOTENEMY
+        break
+      }
+      ifcount 48
+      {
+        ifrnd 8
+          ifp palive
+            ifcanshoottarget
+        {
+          ifrnd 192
+            ai AIPIGSHOOTENEMY
+          else
+            ai AIPIGDIVING
+          break
+        }
+      }
+    }
+  }
+ends
+
+
+state pigshootenemystate
+//  ifcansee
+  {
+    ifcount 12 nullop
+    else
+      ifcount 11
+    {
+      ifcanshoottarget
+      {
+        sound PIG_ATTACK
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+      }
+      else
+        ai AIPIGSEEKENEMY
+    }
+    ifcount 25 nullop
+    else
+      ifcount 24
+      {
+        action APIGCOCK
+        sound SHOTGUN_COCK
+      }
+    ifcount 48 nullop
+    else
+      ifcount 47
+    {
+      ifcanshoottarget
+      {
+        sound PIG_ATTACK
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+        shoot SHOTGUN
+      }
+      else
+        ai AIPIGSEEKENEMY
+    }
+    ifcount 60 nullop
+    else
+      ifcount 59
+      {
+        action APIGCOCK
+        sound SHOTGUN_COCK
+      }
+    ifcount 72
+    {
+      ifrnd 64
+        resetcount
+      else
+      {
+        ifpdistl 768
+          ai AIPIGFLEEENEMY
+        else
+          ai AIPIGSEEKENEMY
+      }
+    }
+    ifaction APIGCOCK
+      ifactioncount 2
+        action APIGSHOOT
+  }
+  else
+    ai AIPIGSEEKENEMY
+ends
+
+state pigfleeenemystate
+  ifactioncount 8
+    ai AIPIGSEEKENEMY
+  else
+    ifnotmoving
+      ai AIPIGSEEKENEMY
+ends
+
+state pigdivestate
+  ifaction APIGDIVESHOOT
+  {
+    ifcansee
+    {
+      ifcount 12 nullop
+      else
+        ifcount 11
+      {
+        ifcanshoottarget
+        {
+          sound PIG_ATTACK
+          shoot SHOTGUN
+          shoot SHOTGUN
+          shoot SHOTGUN
+          shoot SHOTGUN
+        }
+        else
+          ai AIPIGSEEKENEMY
+      }
+      ifcount 25 nullop
+      else
+        ifcount 24
+          sound SHOTGUN_COCK
+      ifcount 48 nullop
+      else
+        ifcount 47
+      {
+        ifcanshoottarget
+        {
+          sound PIG_ATTACK
+          shoot SHOTGUN
+          shoot SHOTGUN
+          shoot SHOTGUN
+          shoot SHOTGUN
+        }
+        else
+          ai AIPIGSEEKENEMY
+      }
+      ifcount 60 nullop
+      else
+        ifcount 59
+      {
+        sound SHOTGUN_COCK
+        ifgapzl 32
+          ai AIPIGDIVING
+        else
+        {
+          ifpdistl 4096
+            ai AIPIGFLEEENEMY
+          else
+            ai AIPIGSEEKENEMY
+        }
+      }
+    }
+    else
+      ifgapzl 32
+        ai AIPIGDIVING
+      else
+        ai AIPIGSEEKENEMY
+  }
+  else
+    ifactioncount 2
+    ifp palive
+    {
+      resetcount
+      action APIGDIVESHOOT
+    }
+ends
+
+state checkpighitstate
+  spawn BLOOD
+  ifdead
+  {
+    state random_wall_jibs
+    ifrnd 16
+      spawn SHIELD
+    else
+      state drop_shotgun
+
+    ifwasweapon GROWSPARK
+    {
+      sound ACTOR_GROWING
+      ai AIPIGGROW
+      break
+    }
+
+    addkills 1
+
+    ifwasweapon FREEZEBLAST
+    {
+      sound SOMETHINGFROZE
+      spritepal 1
+      move 0
+      action APIGFROZEN
+      strength 0
+      break
+    }
+    ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      state standard_jibs
+      killit
+    }
+    else
+      ifwasweapon RPG
+    {
+      sound SQUISHED
+      state standard_jibs
+      killit
+    }
+    else
+      ai AIPIGDYING
+        sound PIG_DYING
+  }
+  else
+  {
+    sound PIG_PAIN
+    state random_wall_jibs
+
+    ifwasweapon SHRINKSPARK
+    {
+      sound ACTOR_SHRINKING
+      ai AIPIGSHRINK
+    }
+    else
+      ifwasweapon GROWSPARK
+        sound EXPANDERHIT
+    else
+      ifrnd 32
+        ai AIPIGHIT
+    else
+      ifrnd 64
+        ai AIPIGSHOOTENEMY
+    else
+      ifrnd 64
+      {
+        ai AIPIGDIVING
+        action APIGDIVESHOOT
+      }
+  }
+ends
+
+state pigshrinkstate
+  ifcount SHRUNKDONECOUNT
+    ai AIPIGSEEKENEMY
+  else
+    ifcount SHRUNKCOUNT
+      sizeto 48 40
+  else
+    state genericshrunkcode
+ends
+
+state pigdyingstate
+  ifactioncount 5
+  {
+    ifrnd 64
+      spawn BLOODPOOL
+    state rf
+    iffloordistl 8
+      sound THUD
+    action APIGDEAD
+    move PIGSTOPPED
+    break
+  }
+ends
+
+
+actor PIGCOPDIVE PIGCOPSTRENGTH
+  ai AIPIGDIVING
+  action APIGDIVESHOOT
+  cactor PIGCOP
+enda
+actor PIGCOPSTAYPUT PIGCOPSTRENGTH
+  ai AIPIGSEEKENEMY
+  cactor PIGCOP
+enda
+actor PIGCOP PIGCOPSTRENGTH APIGSTAND
+  fall
+  state checksquished
+  ifaction APIGSTAND
+    ai AIPIGSEEKENEMY
+  else
+    ifaction APIGDEAD
+  {
+    ifrespawn
+      ifcount RESPAWNACTORTIME
+    {
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength PIGCOPSTRENGTH
+      ai AIPIGSEEKENEMY
+    }
+    else
+    {
+      strength 0
+      ifhitweapon
+        ifwasweapon RADIUSEXPLOSION
+      {
+        sound SQUISHED
+        state standard_jibs
+        killit
+      }
+      break
+    }
+  }
+  else
+    ifaction APIGFROZEN
+  {
+    ifcount THAWTIME
+    {
+      ai AIPIGSEEKENEMY
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+        ifrnd 8
+          spawn WATERDRIP
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      addkills 1
+
+      lotsofglass 30
+      ifrnd 84 spawn BLOODPOOL
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  else
+    ifai AIPIGDYING
+      state pigdyingstate
+  else
+    ifai AIPIGHIT
+    {
+      ifactioncount 3
+      ai AIPIGSEEKENEMY
+    }
+  else
+    ifai AIPIGSHRINK
+      state pigshrinkstate
+  else
+  {
+    ifai AIPIGSEEKENEMY
+      state pigseekenemystate
+    else
+      ifai AIPIGDODGE
+        state pigseekenemystate
+    else
+      ifai AIPIGSHOOTENEMY
+        state pigshootenemystate
+    else
+      ifai AIPIGGROW
+        state genericgrowcode
+    else
+      ifai AIPIGFLEEENEMY
+        state pigfleeenemystate
+    else
+      ifai AIPIGDIVING
+        state pigdivestate
+    else
+      ifai AIPIGCHARGE
+        state pigseekenemystate
+    ifhitweapon
+      state checkpighitstate
+    ifrnd 1
+    {
+      ifrnd 32
+        soundonce PIG_ROAM
+      else
+        ifrnd 64
+          soundonce PIG_ROAM2
+      else
+        soundonce PIG_ROAM3
+    }
+  }
+enda

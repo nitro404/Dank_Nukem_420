@@ -1,0 +1,34 @@
+state steamcode
+  ifpdistl 6144
+    soundonce STEAM_HISSING
+
+  ifcount 20
+    {
+      resetcount
+      ifp palive
+        ifpdistl 1024
+      {
+        addphealth -1
+        palfrom 16 16
+      }
+    }
+  else
+  {
+    ifspawnedby STEAM
+      break
+    else
+      ifspawnedby CEILINGSTEAM
+        break
+
+    sizeto 24 24
+  }
+ends
+
+action STEAMFRAMES    0     5     1     1     1
+actor STEAM 0 STEAMFRAMES
+  state steamcode
+enda
+
+actor CEILINGSTEAM 0 STEAMFRAMES
+  state steamcode
+enda

@@ -1,0 +1,161 @@
+action BURNING_FLAME  0   12   1   1   2
+move BURNING_VELS 
+
+state burningstate
+
+  sleeptime 300
+
+
+  ifspawnedby BURNING
+  {
+    ifgapzl 16
+      break
+  }
+  else
+    ifspawnedby BURNING2
+  {
+    ifgapzl 16
+      break
+  }
+
+  ifpdistg 10240
+    break
+
+  ifcount 128
+  {
+    ifspawnedby TIRE
+    {
+      ifactioncount 512
+        killit
+      ifrnd 16
+        sizeto 64 48
+    }
+    else
+    {
+      sizeto 8 8
+      sizeto 8 8
+      ifcount 192
+        killit
+    }
+  }
+  else
+  {
+    ifmove 0
+      move BURNING_VELS
+
+    sizeto 52 52
+
+    ifp palive
+      ifpdistl 844
+        ifrnd 32
+          ifcansee
+    {
+      soundonce DUKE_LONGTERM_PAIN
+      addphealth -1
+      palfrom 24 16
+    }
+  }
+
+ends
+
+actor BURNING WEAK BURNING_FLAME
+  state burningstate
+enda
+
+actor BURNING2 WEAK BURNING_FLAME
+  state burningstate
+enda
+
+action FFLAME_FR 0 16 1 1 1
+action FFLAME 0 1 1 1 1
+
+actor FLOORFLAME 0 FFLAME_FR
+  ifaction FFLAME_FR
+  {
+    ifpdistl 1024
+      hitradius 1024 WEAKEST WEAKEST WEAKEST WEAKEST
+    ifactioncount 16
+      action FFLAME
+  }
+  ifaction FFLAME
+    ifrnd 4
+  {
+    action FFLAME_FR
+    sound CAT_FIRE
+    resetactioncount
+  }
+enda
+
+action FIRE_FRAMES   -1 14 1 1 1
+move FIREVELS
+
+state firestate
+
+  ifaction 0
+    ifrnd 16
+    {
+      action FIRE_FRAMES
+      cstator 128
+    }
+
+  sleeptime 300         // Never let it fall to sleep
+
+  ifspawnedby FIRE
+  {
+    ifgapzl 16
+      break
+  }
+  else
+    ifspawnedby FIRE2
+  {
+    ifgapzl 16
+      break
+  }
+
+  ifinwater
+    killit
+
+  ifp palive
+    ifpdistl 844
+      ifrnd 32
+        ifcansee
+  {
+    soundonce DUKE_LONGTERM_PAIN
+    addphealth -1
+    palfrom 32 32
+  }
+
+  ifactor FIRE
+  {
+    ifspawnedby FIRE
+      break
+  }
+  else
+    ifactor FIRE2
+      ifspawnedby FIRE2
+        break
+
+  iffloordistl 128
+  {
+    ifrnd 128
+    {
+      ifcount 84
+        killit
+                // This line(and the else below)
+                // is not necessary, since actors
+                // with zero x-size are automatically
+                // deleted anyway!
+      else
+        ifcount 42
+          sizeto 0 0
+      else
+        sizeto 32 32
+    }
+  }
+  else
+    killit
+
+ends
+
+useractor notenemy FIRE WEAK 0 FIREVELS state firestate enda
+useractor notenemy FIRE2 WEAK 0 FIREVELS state firestate enda

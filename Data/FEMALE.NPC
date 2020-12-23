@@ -1,0 +1,426 @@
+action FEMSHRUNK
+action FEMFROZEN1 1
+action FEMGROW
+action FEMFROZEN2
+action FEMDANCE1 19 1 1 1 16
+action FEMDANCE3 19 1 1 1 26
+action FEMDANCE2 20 2 1 1 10
+
+action FEMANIMATESLOW 0 2 1 1 100
+action TOUGHGALANIM   0 5 1 1 25
+action FEMANIMATE
+
+state toughgalspeech
+  ifrnd 64
+  {
+    ifnosounds
+      soundonce TOUGHGALSND1
+  }
+  else
+    ifrnd 64
+  {
+    ifnosounds
+      soundonce TOUGHGALSND2
+  }
+  else
+    ifrnd 64
+  {
+    ifnosounds
+      soundonce TOUGHGALSND3
+  }
+  else
+    ifnosounds
+      soundonce TOUGHGALSND4
+ends
+
+state femcode
+
+  ifactor NAKED1 nullop
+  else
+    ifactor FEM6 nullop
+    else
+    {
+      fall
+      ifactor BLOODYPOLE
+        ifhitweapon
+          ifdead
+      {
+        state standard_jibs
+        killit
+      }
+    }
+
+  ifaction FEMSHRUNK
+  {
+    ifcount SHRUNKDONECOUNT
+    {
+      action FEMANIMATE
+      cstat 257
+    }
+    else
+      ifcount SHRUNKCOUNT
+        sizeto 40 40
+    else
+      state genericshrunkcode
+  }
+  else ifaction FEMGROW
+  {
+    ifcount 32
+    {
+      respawnhitag
+      guts JIBS4 20
+      guts JIBS6 20
+      spritepal 6
+      soundonce LADY_SCREAM
+      ifactor NAKED1
+        debris SCRAP3 4
+      else
+        ifactor PODFEM1
+          debris SCRAP3 4
+      sound SQUISHED
+      killit
+    }
+    else
+      sizeto MAXXSTRETCH MAXYSTRETCH
+  }
+
+  else
+    ifaction FEMDANCE1
+  {
+    ifactioncount 2
+      action FEMDANCE2
+  }
+  else
+    ifaction FEMDANCE2
+  {
+    ifactioncount 8
+      action FEMDANCE3
+  }
+  else
+    ifaction FEMDANCE3
+  {
+    ifactioncount 2
+    action FEMANIMATE
+  }
+  else
+    ifaction FEMFROZEN1
+  {
+    ifcount THAWTIME
+    {
+      action FEMANIMATE
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      lotsofglass 30
+      sound GLASS_BREAKING
+      respawnhitag
+      ifrnd 84
+        spawn BLOODPOOL
+      killit
+    }
+    else
+      ifp pfacing
+        ifpdistl FROZENQUICKKICKDIST
+          pkick
+    break
+  }
+  else ifaction FEMFROZEN2
+  {
+    ifcount THAWTIME
+    {
+      ifactor TOUGHGAL
+        action TOUGHGALANIM
+      else
+        ifactor FEM10
+          action FEMANIMATESLOW
+      else
+        action FEMANIMATE
+
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+          break
+      }
+
+      lotsofglass 30
+
+      sound GLASS_BREAKING
+      ifrnd 84
+        spawn BLOODPOOL
+      respawnhitag
+
+      ifrnd 128
+        sound DUKE_HIT_STRIPPER1
+      else
+        sound DUKE_HIT_STRIPPER2
+
+      killit
+    }
+    else
+      ifp pfacing
+        ifpdistl FROZENQUICKKICKDIST
+          pkick
+    break
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      ifwasweapon GROWSPARK
+      {
+        cstat 0
+        move 0
+        sound ACTOR_GROWING
+        action FEMGROW
+        break
+      }
+      else ifwasweapon FREEZEBLAST
+      {
+        ifaction FEMSHRUNK
+          break
+
+        ifactor NAKED1
+          action FEMFROZEN2
+        else
+          ifactor FEM5
+            action FEMFROZEN2
+        else
+          ifactor FEM6
+            action FEMFROZEN2
+        else
+          ifactor FEM8
+            action FEMFROZEN2
+        else
+          ifactor FEM9
+            action FEMFROZEN2
+        else
+          ifactor FEM10
+            action FEMFROZEN2
+        else
+          ifactor TOUGHGAL
+            action FEMFROZEN2
+        else
+          ifactor PODFEM1
+            action FEMFROZEN2
+        else
+          action FEMFROZEN1
+
+        move 0
+        spritepal 1
+        strength 0
+
+        sound SOMETHINGFROZE
+
+        break
+      }
+
+      ifrnd 128
+        sound DUKE_HIT_STRIPPER1
+      else
+        sound DUKE_HIT_STRIPPER2
+
+      respawnhitag
+      state standard_jibs
+      state random_wall_jibs
+      spawn BLOODPOOL
+
+      ifactor FEM1
+        money 5
+      else
+        ifactor FEM2
+      {
+        money 7
+        cactor BARBROKE
+        cstat 0
+      }
+      else
+        ifactor FEM3
+          money 4
+      else
+        ifactor FEM7
+          money 8
+
+      ifactor FEM5
+      {
+        strength TOUGH
+        cactor BLOODYPOLE
+      }
+      else ifactor FEM6
+      {
+        cstat 0
+        cactor FEM6PAD
+      }
+      else
+        ifactor FEM8
+      {
+        strength TOUGH
+        cactor BLOODYPOLE
+      }
+      else
+      {
+        spritepal 6
+        soundonce LADY_SCREAM
+        ifactor NAKED1
+          debris SCRAP3 18
+        else
+          ifactor PODFEM1
+            debris SCRAP3 18
+        killit
+      }
+    }
+    else
+    {
+      ifwasweapon SHRINKSPARK
+      {
+        sound ACTOR_SHRINKING
+        move 0
+        action FEMSHRUNK
+        cstat 0
+        break
+      }
+      else
+        ifwasweapon GROWSPARK
+          sound EXPANDERHIT
+      ifactor FEM8
+        break
+
+      ifactor TOUGHGAL
+          state toughgalspeech
+      else sound SQUISHED
+
+      guts JIBS6 1
+    }
+  }
+ends
+
+state killme
+  ifinwater nullop
+  else
+    ifp pfacing
+      ifpdistl 1280
+        ifhitspace
+          soundonce KILLME
+ends
+
+state tipme
+  ifp pfacing
+    ifpdistl 1280
+      ifhitspace
+  {
+    tip
+    ifrnd 128
+      soundonce DUKE_TIP1
+    else
+      soundonce DUKE_TIP2
+    ifactor FEM1
+      action FEMDANCE1
+  }
+ends
+
+state toughgaltalk
+  ifp pfacing
+    ifpdistl 1280
+      ifhitspace
+        state toughgalspeech
+ends
+
+actor FEM1 TOUGH FEMANIMATE
+  state tipme
+  state femcode
+enda
+actor FEM2 TOUGH FEMANIMATE
+  state tipme
+  state femcode
+enda
+actor FEM3 TOUGH FEMANIMATE
+  state tipme
+  state femcode
+enda
+actor FEM4 TOUGH FEMANIMATE
+  state femcode
+enda
+actor FEM5 TOUGH FEMANIMATE
+  state killme
+  state femcode
+enda
+actor FEM6 TOUGH FEMANIMATE
+  state killme
+  state femcode
+enda
+actor FEM7 TOUGH FEMANIMATE
+  state tipme
+  state femcode
+enda
+actor FEM8 TOUGH FEMANIMATE
+  state femcode
+enda
+actor FEM9 TOUGH FEMANIMATE
+  state femcode
+enda
+actor FEM10 TOUGH FEMANIMATESLOW
+  state tipme
+  state femcode
+enda
+
+actor TOUGHGAL MANWOMANSTRENGTH TOUGHGALANIM
+  state toughgaltalk
+  state femcode
+enda
+
+actor NAKED1 TOUGH FEMANIMATE
+  state killme
+  state femcode
+enda
+actor PODFEM1 TOUGH FEMANIMATE
+  state killme
+  state femcode
+enda
+actor BLOODYPOLE TOUGH
+  state femcode
+enda
+actor STATUEFLASH
+  fall
+  ifcount 32
+    cactor STATUE
+enda
+actor STATUE
+  fall
+  ifp pfacing
+    ifpdistl 1280
+      ifhitspace
+  {
+    cactor STATUEFLASH
+    move 0
+  }
+enda

@@ -1,0 +1,282 @@
+action ACOMMBREETH  0  3  5  1  40
+action ACOMMFROZEN  0  1  5
+action ACOMMSPIN   -5  1  5  1  12
+action ACOMMGET   0  3  5  1  30
+action ACOMMSHOOT  20  1  5   1 35
+action ACOMMABOUTTOSHOOT 20 1 5 1 30
+action ACOMMDYING  30  8  1  1  12
+action ACOMMDEAD   38  1  1  1  1
+
+
+move COMMGETUPVELS 128 -64
+move COMMGETVELS 128 64
+move COMMSLOW 64 24
+move COMMSTOPPED
+
+ai AICOMMWAIT ACOMMBREETH COMMSTOPPED faceplayerslow
+ai AICOMMGET ACOMMGET COMMGETVELS seekplayer
+ai AICOMMSHOOT ACOMMSHOOT COMMSTOPPED faceplayerslow
+ai AICOMMABOUTTOSHOOT ACOMMABOUTTOSHOOT COMMSTOPPED faceplayerslow
+ai AICOMMSPIN ACOMMSPIN COMMGETVELS spin
+ai AICOMMDYING ACOMMDYING COMMSTOPPED faceplayer
+ai AICOMMSHRUNK ACOMMGET COMMSLOW furthestdir
+ai AICOMMGROW ACOMMGET COMMSTOPPED furthestdir
+
+state checkcommhitstate
+
+  ifhitweapon
+  {
+    guts JIBS6 2
+
+    ifdead
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        sound SOMETHINGFROZE
+        spritepal 1
+        move 0
+        action ACOMMFROZEN
+        strength 0
+        break
+      }
+      else
+        ifwasweapon GROWSPARK
+      {
+        sound ACTOR_GROWING
+        ai AICOMMGROW
+        break
+      }
+
+      addkills 1
+
+      ifwasweapon RADIUSEXPLOSION
+      {
+        spawn BLOODPOOL
+        sound SQUISHED
+        state standard_jibs
+        killit
+      }
+      else
+        ifwasweapon RPG
+      {
+        sound SQUISHED
+        spawn BLOODPOOL
+        state standard_jibs
+        killit
+      }
+
+      sound COMM_DYING
+      ai AICOMMDYING
+    }
+    else
+    {
+      soundonce COMM_PAIN
+      ifwasweapon SHRINKSPARK
+      {
+        sound ACTOR_SHRINKING
+        ai AICOMMSHRUNK
+      }
+      else
+        ifwasweapon GROWSPARK
+          sound EXPANDERHIT
+      else
+        ifrnd 24
+          ai AICOMMABOUTTOSHOOT
+    }
+  }
+ends
+
+actor COMMANDERSTAYPUT COMMANDERSTRENGTH
+  cactor COMMANDER
+  ai AICOMMABOUTTOSHOOT
+enda
+
+actor COMMANDER COMMANDERSTRENGTH
+
+  state checksquished
+
+  ifaction ACOMMFROZEN
+  {
+    fall
+
+    ifcount THAWTIME
+    {
+      getlastpal
+      ai AICOMMWAIT
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      addkills 1
+
+      ifrnd 84
+        spawn BLOODPOOL
+      lotsofglass 30
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  ifai 0
+    ai AICOMMSHOOT
+  else
+    ifai AICOMMWAIT
+  {
+    ifcount 20
+    {
+      ifcansee
+      {
+        ifcanshoottarget
+        {
+          ifrnd 96
+            ai AICOMMGET
+          else
+            ai AICOMMABOUTTOSHOOT
+        }
+      }
+      else
+        ai AICOMMGET
+    }
+  }
+  else
+    ifai AICOMMABOUTTOSHOOT
+  {
+    ifactioncount 2
+    {
+      ifcansee
+        ai AICOMMSHOOT
+      else
+      {
+        ai AICOMMGET
+        break
+      }
+    }
+    ifrnd 32 soundonce COMM_ATTACK
+  }
+  else
+    ifai AICOMMSHOOT
+  {
+    ifcanshoottarget
+    {
+      ifcount 24
+        ifrnd 16
+          ai AICOMMWAIT
+      ifactioncount 2
+      {
+        shoot RPG
+        resetactioncount
+      }
+    }
+    else
+      ai AICOMMGET
+  }
+  else
+    ifai AICOMMSHRUNK
+  {
+    ifcount SHRUNKDONECOUNT
+      ai AICOMMGET
+    else
+      ifcount SHRUNKCOUNT
+        sizeto 48 40
+    else
+      state genericshrunkcode
+  }
+  else
+    ifai AICOMMGROW
+      state genericgrowcode
+  else
+    ifai AICOMMGET
+  {
+    ifnotmoving
+      ifrnd 4
+        operate
+    ifpdistl 1024
+      ifp palive
+    {
+      sound COMM_SPIN
+      ai AICOMMSPIN
+      break
+    }
+
+    ifcansee
+    {
+      ifp phigher
+        move COMMGETUPVELS getv geth faceplayer
+      else
+        move COMMGETVELS getv geth faceplayer
+    }
+    ifactioncount 8
+      ifrnd 2
+        ai AICOMMABOUTTOSHOOT
+  }
+  else
+    ifai AICOMMSPIN
+  {
+    soundonce COMM_SPIN
+    ifcount 16
+    {
+      ifpdistl 1280
+      {
+        addphealth CAPTSPINNINGPLAYER
+        sound DUKE_GRUNT
+        palfrom 32
+        16 resetcount
+      }
+      else
+        ifpdistg 2300
+          ai AICOMMWAIT
+    }
+    ifactioncount 52
+      ai AICOMMWAIT
+    ifnotmoving
+      ifrnd 32
+        operate
+  }
+
+  ifai AICOMMDYING
+  {
+    fall
+    strength 0
+
+    ifhitweapon
+      ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      spawn BLOODPOOL
+      state standard_jibs
+      killit
+    }
+
+    ifaction ACOMMDYING
+      ifactioncount 8
+    {
+      iffloordistl 8
+        sound THUD
+      cstat 0
+      action ACOMMDEAD
+    }
+  }
+  else
+  {
+    ifrnd 2
+      soundonce COMM_ROAM
+    state checkcommhitstate
+  }
+enda

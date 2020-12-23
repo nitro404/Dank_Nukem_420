@@ -1,0 +1,88 @@
+action ASATNSPIN     0 5 1 1 4
+action ASATSHOOTING   -10 3 5 1 40
+action ASATWAIT      0 1 5 1 1
+move TURRVEL
+
+actor ROTATEGUN ROTTURRETSTRENGTH
+// ASATSHOOTING TURRVEL faceplayer
+
+  ifaction 0
+  {
+    action ASATSHOOTING
+    move TURRVEL faceplayer
+  }
+  else
+    ifaction ASATNSPIN
+  {
+    ifactioncount 32
+    {
+      action ASATWAIT
+      move TURRVEL faceplayer
+    }
+  }
+  else
+    ifaction ASATSHOOTING
+  {
+    ifactioncount 12
+      ifrnd 32
+    {
+      action ASATWAIT
+      move 0
+    }
+    ifcount 32
+      resetcount
+    else
+      ifcount 16
+    {
+      ifcount 17 nullop
+      else
+      {
+        sound PRED_ATTACK
+        shoot FIRELASER
+      }
+    }
+    else
+      ifcount 4
+    {
+      ifcount 5 nullop
+      else
+      {
+        ifcansee
+          ifcanshoottarget
+        {
+          sound PRED_ATTACK
+          shoot FIRELASER
+        }
+      }
+    }
+  }
+  else
+    ifaction ASATWAIT
+  {
+    ifactioncount 64
+      ifrnd 32
+        ifp palive
+          ifcansee
+    {
+      action ASATSHOOTING
+      move TURRVEL faceplayer
+    }
+  }
+  ifhitweapon
+  {
+    ifdead
+    {
+      addkills 1
+      sound LASERTRIP_EXPLODE
+      debris SCRAP1 15
+      spawn EXPLOSION2
+      killit
+    }
+    else
+    {
+      action ASATNSPIN
+      debris SCRAP1 4
+    }
+    move 0
+  }
+enda

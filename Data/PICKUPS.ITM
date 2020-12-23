@@ -1,0 +1,700 @@
+actor STEROIDS
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk
+      nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifpinventory GET_STEROIDS STEROID_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_STEROIDS STEROID_AMOUNT
+        quote 37
+        ifspawnedby STEROIDS
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor BOOTS
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk
+      nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifpinventory GET_BOOTS BOOT_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_BOOTS BOOT_AMOUNT
+        quote 6
+        ifspawnedby BOOTS
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor HEATSENSOR
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk
+      nullop
+  else
+    ifp palive
+      ifcount 6
+        ifpdistl RETRIEVEDISTANCE
+          ifpinventory GET_HEATS HEAT_AMOUNT
+            ifcanseetarget
+      {
+        addinventory GET_HEATS HEAT_AMOUNT
+        quote 101
+        ifspawnedby HEATSENSOR
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor SHIELD
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifpinventory GET_SHIELD SHIELD_AMOUNT
+              ifcanseetarget
+      {
+        ifspawnedby PIGCOP
+        {
+          ifrnd 128
+            addinventory GET_SHIELD PIG_SHIELD_AMOUNT1
+          else
+            addinventory GET_SHIELD PIG_SHIELD_AMOUNT2
+          quote 104
+          sound KICK_HIT
+          palfrom 24 0 32
+          killit
+        }
+        else
+          addinventory GET_SHIELD SHIELD_AMOUNT
+        quote 38
+        ifspawnedby SHIELD
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+
+actor AIRTANK
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifpinventory GET_SCUBA SCUBA_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_SCUBA SCUBA_AMOUNT
+        quote 39
+        ifspawnedby AIRTANK
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+action HOLODUKE_FRAMES 0 4 1 1 8
+actor HOLODUKE 0 HOLODUKE_FRAMES
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifpinventory GET_HOLODUKE HOLODUKE_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_HOLODUKE HOLODUKE_AMOUNT
+        quote 51
+        ifspawnedby HOLODUKE
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor JETPACK
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifpinventory GET_JETPACK JETPACK_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_JETPACK JETPACK_AMOUNT
+        quote 41
+        ifspawnedby JETPACK
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor ACCESSCARD
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifpinventory GET_ACCESS 0
+          break
+        addinventory GET_ACCESS 1
+        quote 43
+        state getcode
+      }
+enda
+
+actor AMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifcanseetarget
+      {
+        addammo PISTOL_WEAPON PISTOLAMMOAMOUNT
+        quote 65
+        ifspawnedby AMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor FREEZEAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifcanseetarget
+      {
+        addammo FREEZE_WEAPON FREEZEAMMOAMOUNT
+        quote 66
+        ifspawnedby FREEZEAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor SHOTGUNAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifcanseetarget
+      {
+        addammo SHOTGUN_WEAPON SHOTGUNAMMOAMOUNT
+        quote 69
+        ifspawnedby SHOTGUNAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor AMMOLOTS
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifcount 6
+          ifpdistl RETRIEVEDISTANCE
+            ifcanseetarget
+      {
+        addammo PISTOL_WEAPON 48
+        quote 65
+        ifspawnedby AMMOLOTS
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor CRYSTALAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        addammo SHRINKER_WEAPON CRYSTALAMMOAMOUNT
+        quote 78
+        ifspawnedby CRYSTALAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor GROWAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        addammo GROW_WEAPON GROWCRYSTALAMMOAMOUNT
+        quote 123
+        ifspawnedby GROWAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor BATTERYAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        addammo CHAINGUN_WEAPON CHAINGUNAMMOAMOUNT
+          quote 63
+        ifspawnedby BATTERYAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor DEVISTATORAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        addammo DEVISTATOR_WEAPON DEVISTATORAMMOAMOUNT
+        quote 14
+        ifspawnedby DEVISTATORAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor RPGAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else ifp palive
+      ifpdistl RETRIEVEDISTANCE
+        ifcount 6
+          ifcanseetarget
+      {
+        addammo RPG_WEAPON RPGAMMOBOX
+        quote 64
+        ifspawnedby RPGAMMO
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor HBOMBAMMO
+  fall
+  ifmove RESPAWN_ACTOR_FLAG state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+
+        addweapon HANDBOMB_WEAPON HANDBOMBBOX
+        quote 55
+//        addammo HANDBOMB_WEAPON HANDBOMBBOX
+
+        ifspawnedby HBOMBAMMO
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor RPGSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+
+        addweapon RPG_WEAPON RPGAMMOBOX
+        quote 56
+        ifspawnedby RPGSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor SHOTGUNSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifspawnedby PIGCOP
+        {
+          addweapon SHOTGUN_WEAPON 0
+          ifrnd 64
+            addammo SHOTGUN_WEAPON 4
+          else ifrnd 64
+            addammo SHOTGUN_WEAPON 3
+          else ifrnd 64
+            addammo SHOTGUN_WEAPON 2
+          else
+            addammo SHOTGUN_WEAPON 1
+        }
+        else
+        {
+          ifgotweaponce 0
+            break
+          addweapon SHOTGUN_WEAPON SHOTGUNAMMOAMOUNT
+          quote 57
+        }
+
+        ifspawnedby SHOTGUNSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+
+
+actor SIXPAK
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifphealthl MAXPLAYERHEALTH
+              ifcanseetarget
+      {
+        addphealth 30
+        quote 62
+        ifspawnedby SIXPAK
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor COLA
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifphealthl MAXPLAYERHEALTH
+              ifcanseetarget
+      {
+        addphealth 10
+        quote 61
+        ifspawnedby COLA
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+actor ATOMICHEALTH
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifphealthl MAXPLAYERATOMICHEALTH
+              ifcanseetarget
+      {
+        addphealth 50
+        quote 19
+        ifspawnedby ATOMICHEALTH
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+
+
+
+actor FIRSTAID
+  fall
+  ifmove RESPAWN_ACTOR_FLAG state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifpinventory GET_FIRSTAID FIRSTAID_AMOUNT
+              ifcanseetarget
+      {
+        addinventory GET_FIRSTAID FIRSTAID_AMOUNT
+        quote 3
+
+        ifspawnedby FIRSTAID
+          state getcode
+        else
+          state quikget
+      }
+enda
+
+
+actor FIRSTGUNSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+        addweapon PISTOL_WEAPON 48
+        ifspawnedby FIRSTGUNSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+
+actor TRIPBOMBSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+
+        addweapon TRIPBOMB_WEAPON 1
+        quote 58
+        ifspawnedby TRIPBOMBSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor CHAINGUNSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+
+        addweapon CHAINGUN_WEAPON 50
+        quote 54
+        ifspawnedby CHAINGUNSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor SHRINKERSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+        addweapon SHRINKER_WEAPON 10
+        quote 60
+        ifspawnedby SHRINKERSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor FREEZESPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG
+    state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+
+        addweapon FREEZE_WEAPON FREEZEAMMOAMOUNT
+        quote 59
+        ifspawnedby FREEZESPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda
+
+actor DEVISTATORSPRITE
+  fall
+  ifmove RESPAWN_ACTOR_FLAG state respawnit
+  else
+    ifp pshrunk nullop
+    else
+      ifp palive
+        ifpdistl RETRIEVEDISTANCE
+          ifcount 6
+            ifcanseetarget
+      {
+        ifgotweaponce 0
+          break
+        addweapon DEVISTATOR_WEAPON DEVISTATORAMMOAMOUNT
+        quote 87
+        ifspawnedby DEVISTATORSPRITE
+          state getweaponcode
+        else
+          state quikweaponget
+      }
+enda

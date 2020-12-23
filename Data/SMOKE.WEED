@@ -1,0 +1,23 @@
+move SMOKEVEL 8 -16
+move ENGINE_SMOKE 64 -64
+move SMOKESHOOTOUT -192
+action SMOKEFRAMES 0 4 1 1 10
+actor SMALLSMOKE 0 SMOKEFRAMES
+  ifmove 0
+  {
+    ifspawnedby RECON
+      move SMOKESHOOTOUT geth
+    else
+      ifspawnedby SECTOREFFECTOR
+        move ENGINE_SMOKE geth getv
+    else
+      move SMOKEVEL geth getv faceplayer
+    ifspawnedby RPG
+      cstat 2
+  }
+  ifpdistl 1596
+    ifspawnedby RPG
+      killit
+  ifactioncount 4
+    killit
+enda

@@ -1,0 +1,34 @@
+actor ORGANTIC TURRETSTRENGTH
+  ifcount 48
+    resetcount
+  else
+  {
+    ifcount 32
+    sizeto 32 32
+  }
+  else
+    ifcount 16
+    {
+      sizeto 48 18
+      ifpdistl 2048
+      {
+        sound TURR_ATTACK
+        addphealth -2
+        palfrom 32 16
+      }
+    }
+  ifhitweapon
+  {
+    ifdead
+    {
+      addkills 1
+      sound TURR_DYING
+      guts JIBS5 10
+      killit
+    }
+    sound TURR_PAIN
+    break
+  }
+  ifrnd 1
+    soundonce TURR_ROAM
+enda

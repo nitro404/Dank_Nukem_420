@@ -1,0 +1,95 @@
+action SHRINKERFRAMES 0 4 1 1 10
+actor SHRINKEREXPLOSION 0 SHRINKERFRAMES
+  ifactioncount 4
+    killit
+enda
+
+action EXPLOSION_FRAMES 0 20 1 1  4
+actor EXPLOSION2 1 EXPLOSION_FRAMES
+  ifactioncount 20
+    killit
+enda
+
+actor EXPLOSION2BOT 1 EXPLOSION_FRAMES
+  ifactioncount 20
+    killit
+enda
+
+action TRANSFOWARD 0  6  1  1  2
+action TRANSBACK   5  6  1 -1  2
+actor TRANSPORTERSTAR 0 TRANSFOWARD
+  ifaction TRANSFOWARD
+  {
+    ifactioncount 6
+      action TRANSBACK
+  }
+  else
+    ifactioncount 6
+      killit
+enda
+
+action BEAMFOWARD  0  4  1  1  9
+actor TRANSPORTERBEAM 0 BEAMFOWARD
+  sizeto 32 64
+  sizeto 32 64
+  sizeto 32 64
+  ifactioncount 4
+    killit
+enda
+
+actor KNEE KNEE_WEAPON_STRENGTH enda
+actor SPIT SPIT_WEAPON_STRENGTH enda
+actor CHAINGUN CHAINGUN_WEAPON_STRENGTH enda
+actor SHOTGUN SHOTGUN_WEAPON_STRENGTH enda
+actor FIRELASER FIRELASER_WEAPON_STRENGTH enda
+actor HEAVYHBOMB HANDBOMB_WEAPON_STRENGTH enda
+actor BOUNCEMINE BOUNCEMINE_WEAPON_STRENGTH enda
+actor MORTER MORTER_WEAPON_STRENGTH enda
+actor SHRINKSPARK SHRINKER_WEAPON_STRENGTH enda
+
+actor GROWSPARK GROWSPARK_WEAPON_STRENGTH
+  ifcount 18
+    killit
+  else
+    ifcount 9
+  {
+    sizeto 0 0
+    sizeto 0 0
+    sizeto 0 0
+    sizeto 0 0
+  }
+  else
+  {
+    sizeto 28 28
+    sizeto 28 28
+    sizeto 28 28
+    sizeto 28 28
+  }
+enda
+
+actor RPG RPG_WEAPON_STRENGTH enda
+actor FREEZEBLAST FREEZETHROWER_WEAPON_STRENGTH enda
+actor DEVISTATORBLAST FREEZETHROWER_WEAPON_STRENGTH enda
+actor COOLEXPLOSION1 COOL_EXPLOSION_STRENGTH enda
+actor TRIPBOMB TRIPBOMB_STRENGTH enda
+
+action WEAP2FRAMES 0  4  1  1  6
+actor SHOTSPARK1 PISTOL_WEAPON_STRENGTH WEAP2FRAMES
+  ifdead
+    killit
+  ifactioncount 4
+    killit
+  else
+  {
+    ifactioncount 3
+    {
+      ifinwater
+      spawn WATERBUBBLE
+    }
+    else
+      ifcount 2 nullop
+      else
+        ifonwater
+          spawn WATERSPLASH2
+  }
+enda

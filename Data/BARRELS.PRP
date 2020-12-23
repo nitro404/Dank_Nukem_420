@@ -1,0 +1,153 @@
+action RUBCANDENT 1 1 1 1 1
+
+actor RUBBERCAN WEAK
+  ifaction RUBCANDENT
+  {
+    ifactioncount 16
+    {
+      strength 0
+      action ANULLACTION
+      break
+    }
+  }
+  else
+    ifhitweapon
+  {
+    ifwasweapon RADIUSEXPLOSION
+    {
+      state rats
+      ifrnd 48
+        spawn BURNING
+      debris SCRAP3 12
+      killit
+    }
+    else
+      action RUBCANDENT
+  }
+enda
+
+action EXPBARRELFRAME     0   2   1   1   15
+actor EXPLODINGBARREL 26
+  fall
+  ifaction EXPBARRELFRAME
+  {
+    ifactioncount 2
+    {
+      hitradius 1024 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+      spawn EXPLOSION2
+      debris SCRAP2 2
+      sound PIPEBOMB_EXPLODE
+      killit
+    }
+    break
+  }
+  ifsquished
+  {
+    debris SCRAP1 5
+    killit
+    break
+  }
+  ifhitweapon
+    action EXPBARRELFRAME
+enda
+
+action BARREL_DENTING  2 2 1 1 6
+action BARREL_DENTED   1
+action BARREL_DENTED2  2
+
+actor NUKEBARRELDENTED WEAK
+  cactor NUKEBARREL
+  action BARREL_DENTED
+enda
+
+actor NUKEBARRELLEAKED WEAK
+  cactor NUKEBARREL
+  action BARREL_DENTED2
+enda
+
+state random_ooz
+  ifrnd 128
+    spawn OOZ2
+  else
+    spawn OOZ
+ends
+
+actor NUKEBARREL MEDIUMSTRENGTH
+  ifsquished
+  {
+    debris SCRAP1 32
+    spawn BLOODPOOL
+    state random_ooz
+    killit
+  }
+  fall
+  ifaction BARREL_DENTING
+  {
+    ifactioncount 2
+    {
+      debris SCRAP1 10
+      ifrnd 2 spawn BLOODPOOL
+      killit
+    }
+  }
+  else
+    ifhitweapon
+  {
+    ifdead
+    {
+      sound VENT_BUST
+
+      ifrnd 128
+        spawn BLOODPOOL
+      action BARREL_DENTING
+    }
+    else
+    {
+      ifaction 0
+        action BARREL_DENTED
+      else
+        ifaction BARREL_DENTED
+      {
+        action BARREL_DENTED2
+        spawn BLOODPOOL
+      }
+      else
+        ifaction BARREL_DENTED2
+          action BARREL_DENTING
+    }
+  }
+enda
+
+state burningbarrelcode
+  fall
+  ifcount 32
+  {
+    resetcount
+    ifp palive
+      ifpdistl 1480
+        ifp phigher
+    {
+      addphealth -1
+      palfrom 16 16
+      ifrnd 96
+        sound DUKE_LONGTERM_PAIN
+    }
+  }
+  ifhitweapon
+  {
+    sound VENT_BUST
+    debris SCRAP1 10
+    ifrnd 128
+      spawn BURNING
+    else
+      spawn BURNING2
+    killit
+  }
+ends
+
+actor FIREBARREL
+  state burningbarrelcode
+enda
+actor FIREVASE
+  state burningbarrelcode
+enda

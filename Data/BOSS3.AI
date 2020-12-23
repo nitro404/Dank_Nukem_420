@@ -1,0 +1,270 @@
+action ABOSS3WALK        0  4  5  1  30
+action ABOSS3FROZEN        0  1  5
+action ABOSS3RUN         0  4  5  1  15
+action ABOSS3LOB        20 4  5  1  50
+action ABOSS3LOBBING      30 2  5  1  15
+action ABOSS3DYING        40 8  1  1  20
+action BOSS3FLINTCH       40 1  1  1  1
+action ABOSS3DEAD         48
+
+move PALBOSS3SHRUNKRUNVELS 32
+move PALBOSS3RUNVELS 84
+move BOSS3WALKVELS 208
+move BOSS3RUNVELS 270
+move BOSS3STOPPED
+
+ai AIBOSS3SEEKENEMY ABOSS3WALK BOSS3WALKVELS seekplayer
+ai AIBOSS3RUNENEMY ABOSS3RUN BOSS3RUNVELS faceplayerslow
+ai AIBOSS3LOBENEMY ABOSS3LOB BOSS3STOPPED faceplayer
+ai AIBOSS3DYING ABOSS3DYING BOSS3STOPPED faceplayer
+ai AIBOSS3PALSHRINK ABOSS3WALK PALBOSS3SHRUNKRUNVELS faceplayer
+
+state boss3palshrunkstate
+  ifcount SHRUNKDONECOUNT
+    ai AITROOPSEEKENEMY
+  else
+    ifcount SHRUNKCOUNT
+      sizeto 40 40
+  else
+    state genericshrunkcode
+ends
+
+state checkboss3seekstate
+  ai AIBOSS3SEEKENEMY
+  ifspritepal 0 nullop
+  else   // a fake way of doing a ifspritepal NOT.
+    move PALBOSS3RUNVELS seekplayer
+ends
+
+state boss3runenemystate
+  ifcansee
+  {
+    ifactioncount 3
+    {
+      ifcanshoottarget
+      {
+        resetactioncount
+        sound BOS1_WALK
+      }
+      else
+        ai AIBOSS3SEEKENEMY
+    }
+  }
+  else
+    ai AIBOSS3SEEKENEMY
+ends
+
+state boss3seekenemystate
+  ifrnd 2
+    soundonce BOS3_ROAM
+  else
+    ifactioncount 3
+    {
+      resetactioncount
+      sound BOS1_WALK
+    }
+
+  ifcansee
+    ifcount 32
+      ifrnd 48
+        ifcanshoottarget
+  {
+    ifrnd 64
+      ifpdistg 4096
+      {
+        ai AIBOSS3RUNENEMY
+        ifspritepal 0
+          break
+        move PALBOSS3RUNVELS seekplayer
+        break
+      }
+
+    ifp palive
+      ai AIBOSS3LOBENEMY
+  }
+ends
+
+state boss3dyingstate
+  ifaction ABOSS3DEAD
+  {
+    ifspritepal 0
+      break
+    ifrespawn
+      ifcount RESPAWNACTORTIME
+    {
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength PIGCOPSTRENGTH
+      state checkboss3seekstate
+    }
+    else
+    {
+      strength 0
+      ifhitweapon
+        ifwasweapon RADIUSEXPLOSION
+      {
+        sound SQUISHED
+        state standard_jibs
+        killit
+      }
+      break
+    }
+  }
+  ifactioncount 8
+  {
+    iffloordistl 8
+      sound THUD
+    action ABOSS3DEAD
+    cstat 0
+    ifspritepal 0
+    endofgame 52
+  }
+ends
+
+state boss3lobbedstate
+  ifcansee
+  {
+    ifaction ABOSS3LOBBING
+      ifactioncount 2
+    {
+      shoot RPG
+      resetactioncount
+      ifrnd 8
+        ai AIBOSS3SEEKENEMY
+    }
+
+    ifactioncount 3
+    {
+      action ABOSS3LOBBING
+      resetcount
+    }
+  }
+  else
+    state checkboss3seekstate
+ends
+
+state checkboss3hitstate
+  ifrnd 2
+    spawn BLOODPOOL
+  ifdead
+  {
+    ifspritepal 0
+      globalsound DUKE_TALKTOBOSSFALL
+    else
+    {
+      ifrnd 64
+        globalsound DUKE_TALKTOBOSSFALL
+      ifwasweapon FREEZEBLAST
+      {
+        sound SOMETHINGFROZE
+        spritepal 1
+        move 0
+        action ABOSS3FROZEN
+        strength 0
+        break
+      }
+    }
+
+    addkills 1
+    ai AIBOSS3DYING
+
+    sound BOS3_DYING
+    sound JIBBED_ACTOR9
+
+  }
+  else
+  {
+    ifrnd 32
+    {
+      action BOSS3FLINTCH
+      move 0
+    }
+
+    ifspritepal 0 nullop
+    else
+      ifwasweapon SHRINKSPARK
+    {
+      sound ACTOR_SHRINKING
+      ai AIBOSS3PALSHRINK
+      break
+    }
+
+    soundonce BOS3_PAIN
+
+    debris SCRAP1 1
+    guts JIBS6 1
+  }
+ends
+
+state boss3code
+
+  ifaction ABOSS3FROZEN
+  {
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+
+      addkills 1
+      lotsofglass 30
+
+      ifrnd 84
+        spawn BLOODPOOL
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  ifai 0
+  {
+    ifspritepal 0
+      ai AIBOSS3RUNENEMY
+    else
+    {
+      strength 1
+      ai AIBOSS3LOBENEMY
+    }
+  }
+  else
+    ifaction BOSS3FLINTCH
+    {
+      ifactioncount 3
+      ai AIBOSS3SEEKENEMY
+    }
+  else
+    ifai AIBOSS3SEEKENEMY
+      state boss3seekenemystate
+  else
+    ifai AIBOSS3RUNENEMY
+      state boss3runenemystate
+  else
+    ifai AIBOSS3LOBENEMY
+      state boss3lobbedstate
+  else
+    ifai AIBOSS3PALSHRINK
+      state boss3palshrunkstate
+
+  ifai AIBOSS3DYING
+    state boss3dyingstate
+  else
+  {
+    ifhitweapon
+      state checkboss3hitstate
+    else
+      ifp palive
+        ifspritepal 0
+          ifpdistl 1280
+      {
+        addphealth -1000
+        palfrom 63 63
+      }
+  }
+ends
+
+actor BOSS3 BOSS3STRENGTH fall state boss3code enda

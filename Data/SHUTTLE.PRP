@@ -1,0 +1,6 @@
+define SPACESHUTTLE 487
+move SHUTTLEVELS 16
+actor SPACESHUTTLE TOUGH
+//  ifmove 0          //  Init once
+//    move SHUTTLEVELS getv geth
+enda

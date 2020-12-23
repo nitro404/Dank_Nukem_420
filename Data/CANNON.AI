@@ -1,0 +1,149 @@
+// CANNONBALL for Pirates of the Carribean
+define CANNONBALLSTRENGTH 400
+move CANNONBALL1 512 0
+move CANNONBALL2 512 10
+move CANNONBALL3 512 20
+move CANNONBALL4 512 40
+move CANNONBALL5 512 80
+
+useractor notenemy CANNONBALL CANNONBALLSTRENGTH
+
+  ifaction 0
+  {
+    sizeat 32 32
+    cstat 257         // Force actor to block
+    action ANULLACTION
+  }
+
+    ifactioncount 46
+    {
+      ifactioncount 47 nullop
+      else
+        move CANNONBALL5 geth getv
+    }
+    else
+      ifactioncount 44
+    {
+      ifactioncount 45 nullop
+      else
+        move CANNONBALL4 geth getv
+    }
+    else
+      ifactioncount 40
+    {
+      ifactioncount 41 nullop
+      else
+        move CANNONBALL3 geth getv
+    }
+    else
+      ifactioncount 32
+    {
+      ifactioncount 33 nullop
+      else
+        move CANNONBALL2 geth getv
+    }
+    else
+      ifactioncount 16
+    {
+      ifactioncount 17 nullop
+      else move CANNONBALL1 geth getv
+    }
+
+  ifnotmoving
+  {
+    spawn EXPLOSION2
+    sound PIPEBOMB_EXPLODE
+    hitradius 4096 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+    killit
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      spawn EXPLOSION2
+      hitradius 4096 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+      killit
+    }
+    else
+      debris SCRAP1 3
+  }
+
+enda
+
+define CANNONBALLS 1818
+define CANNONBALLSSTRENGTH 10
+move CANNONBALLSVEL
+
+useractor notenemy CANNONBALLS CANNONBALLSSTRENGTH
+  ifaction 0
+  {
+    cstator 257
+    action ANULLACTION
+  }
+  ifhitweapon
+  {
+    ifdead
+    {
+      spawn EXPLOSION2
+      hitradius 4096 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+      killit
+    }
+    else
+      debris SCRAP1 3
+  }
+enda
+
+
+define CANNON 1810
+define CANNONSTRENGTH 400
+action ACANNONWAIT 0 1 7 1 1
+action ACANNONSHOOTING 0 1 7 1 1
+move CANNONSTOP
+
+useractor enemy CANNON CANNONSTRENGTH // fall
+
+  ifaction 0
+  {
+//    sizeat 64 64
+    action ACANNONWAIT
+  }
+  else
+    ifaction ACANNONSHOOTING
+  {
+    spawn CANNONBALL
+    action ACANNONWAIT
+  }
+  else
+    ifaction ACANNONWAIT
+  {
+    ifactioncount 64
+    {
+      ifrnd 128
+        action ACANNONSHOOTING
+      else
+        resetactioncount
+    }
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      addkills 1
+      hitradius 4096 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+      spawn EXPLOSION2
+      killit
+    }
+    else debris SCRAP1 3
+  }
+
+  ifpdistl 1024
+    ifhitspace
+  {
+    ifp pfacing
+      ifcanshoottarget
+        spawn CANNONBALL
+      else break
+  }
+enda

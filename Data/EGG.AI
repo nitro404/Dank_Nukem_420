@@ -1,0 +1,142 @@
+action EGGOPEN1 1 1 1 1 4
+action EGGOPEN2 2 1 1 1 4
+action EGGOPEN3 2 1 1 1 4
+action EGGWAIT  0
+action EGGFROZEN 1
+action EGGGROW 1
+action EGGSHRUNK 1
+
+actor EGG TOUGH
+  fall
+  ifaction 0
+  {
+    ifcount 64
+    {
+      ifrnd 128
+      {
+        action EGGWAIT
+        move 0
+      }
+      else
+      {
+        sound SLIM_HATCH
+        action EGGOPEN1
+      }
+    }
+  }
+  else
+    ifaction EGGOPEN1
+      ifactioncount 4
+        action EGGOPEN2
+  else
+    ifaction EGGOPEN2
+      ifactioncount 4
+    {
+      spawn GREENSLIME
+      action EGGOPEN3
+    }
+  else
+    ifaction EGGGROW
+      state genericgrowcode
+  else
+    ifaction EGGSHRUNK
+      state genericshrunkcode
+  else
+    ifaction EGGFROZEN
+  {
+    ifcount THAWTIME
+    {
+      action 0
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      lotsofglass 30
+
+      sound GLASS_BREAKING
+      ifrnd 84
+        spawn BLOODPOOL
+
+      addkills 1
+      killit
+    }
+
+    // ifp pducking
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+
+    break
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        sound SOMETHINGFROZE
+        spritepal 1
+        move 0
+        action EGGFROZEN
+        strength 0
+        break
+      }
+      else
+        ifwasweapon GROWSPARK
+      {
+        cstat 0
+        move 0
+        sound ACTOR_GROWING
+        action EGGGROW
+        break
+      }
+
+      addkills 1
+
+      sound SQUISHED
+
+      state standard_jibs
+      killit
+    }
+    else
+      ifwasweapon SHRINKSPARK
+      {
+        move 0
+        sound ACTOR_SHRINKING
+        action EGGSHRUNK
+        break
+      }
+
+      ifwasweapon GROWSPARK
+        sound EXPANDERHIT
+  }
+  else
+    ifaction EGGWAIT
+  {
+    ifcount 512
+      ifrnd 2
+    {
+      ifaction EGGSHRUNK
+        break
+      sound SLIM_HATCH
+      action EGGOPEN1
+    }
+  }
+
+enda

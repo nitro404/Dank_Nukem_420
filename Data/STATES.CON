@@ -1,0 +1,306 @@
+move RESPAWN_ACTOR_FLAG
+
+state jib_sounds
+  ifrnd SWEARFREQUENCY
+  {
+    ifrnd 128
+    {
+      ifrnd 128
+      {
+        ifrnd 128
+        {
+          ifrnd 128
+          {
+            ifrnd 128
+              globalsound JIBBED_ACTOR12
+            else
+              globalsound JIBBED_ACTOR1
+          }
+          else
+          {
+            ifrnd 128
+              globalsound JIBBED_ACTOR9
+            else
+              globalsound JIBBED_ACTOR14
+          }
+        }
+        else
+        {
+          ifrnd 128
+            globalsound SMACKED
+          else
+            globalsound JIBBED_ACTOR2
+        }
+      }
+      else
+      {
+        ifrnd 128
+          globalsound MDEVSPEECH
+        else
+          globalsound JIBBED_ACTOR5
+      }
+    }
+    else
+    {
+      ifrnd 128
+      {
+        ifrnd 128
+        {
+          ifrnd 128
+            globalsound JIBBED_ACTOR11
+          else
+            globalsound JIBBED_ACTOR13
+        }
+        else
+        {
+          ifrnd 128
+            globalsound JIBBED_ACTOR3
+          else
+            globalsound JIBBED_ACTOR8
+        }
+      }
+      else
+      {
+        ifrnd 128
+        {
+          ifrnd 128
+            globalsound JIBBED_ACTOR6
+          else
+            globalsound JIBBED_ACTOR4
+        }
+        else
+        {
+          ifrnd 128
+          {
+            ifrnd 128
+              globalsound JIBBED_ACTOR10
+            else
+              globalsound JIBBED_ACTOR15
+
+          }
+          else
+            globalsound JIBBED_ACTOR7
+        }
+      }
+    }
+  }
+ends
+
+state standard_jibs
+  guts JIBS2 1
+  guts JIBS3 2
+  guts JIBS4 3
+  guts JIBS5 2
+  guts JIBS6 3
+  ifrnd 6
+  {
+    guts JIBS1 1
+    spawn BLOODPOOL
+  }         // a badly drawn spine
+
+  state jib_sounds
+ends
+
+state genericshrunkcode
+  ifcount 32
+  {
+    ifpdistl SQUISHABLEDISTANCE
+    pstomp
+  }
+  else
+  {
+    sizeto MINXSTRETCH MINYSTRETCH
+    spawn FRAMEEFFECT1
+  }
+ends
+
+state genericgrowcode
+  ifcount 32
+  {
+    guts JIBS4 24
+    guts JIBS6 28
+    addkills 1
+    sound SQUISHED
+    sound PIPEBOMB_EXPLODE
+    hitradius 2048 60 70 80 90
+    spawn BLOODPOOL
+    spawn EXPLOSION2
+    killit
+  }
+  else
+  {
+    ifactor COMMANDER
+      sizeto 100 100
+    else
+      ifactor SHARK
+        sizeto 84 84
+    else
+      sizeto MAXXSTRETCH MAXYSTRETCH
+    break
+  }
+ends
+
+state rats
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+  ifrnd 128
+    spawn RAT
+ends
+
+state headhitstate
+
+// Unrem the following line to invoke screen tilting during
+// low player hitpoint damage.
+
+// wackplayer
+
+ends
+
+state getcode
+  ifactor ATOMICHEALTH
+    globalsound GETATOMICHEALTH
+  else
+    globalsound DUKE_GET
+  palfrom 16 0 32
+  ifrespawn
+  {
+    move RESPAWN_ACTOR_FLAG
+    spawn RESPAWNMARKERRED
+    cstat 32768
+  }
+  else
+    killit
+ends
+
+state randgetweapsnds
+  ifrnd 64
+    globalsound DUKE_GETWEAPON1
+  else
+    ifrnd 96
+      globalsound DUKE_GETWEAPON2
+  else
+    ifrnd 128
+      globalsound DUKE_GETWEAPON3
+  else
+    ifrnd 140
+      globalsound DUKE_GETWEAPON4
+  else
+    globalsound DUKE_GETWEAPON6
+ends
+
+state getweaponcode
+
+  state randgetweapsnds
+
+  palfrom 32 0 32
+  ifgotweaponce 1
+    break
+  ifrespawn
+  {
+    move RESPAWN_ACTOR_FLAG
+    spawn RESPAWNMARKERRED
+    cstat 32768
+  }
+  else
+    killit
+ends
+
+state respawnit
+  ifcount RESPAWNITEMTIME
+  {
+    spawn TRANSPORTERSTAR
+    move 0
+    cstat 0
+    sound TELEPORTER
+  }
+ends
+
+state quikget
+  ifactor ATOMICHEALTH
+    globalsound GETATOMICHEALTH
+  else
+    globalsound DUKE_GET
+  palfrom 16 0 32
+  killit
+ends
+
+state quikweaponget
+  state randgetweapsnds
+  palfrom 32 0 32
+  ifgotweaponce 1
+    break
+  killit
+ends
+
+state drop_ammo
+  ifrnd SPAWNAMMOODDS
+    spawn AMMO
+ends
+
+state drop_battery
+  ifrnd SPAWNAMMOODDS
+    spawn BATTERYAMMO
+ends
+
+state drop_sgshells
+  ifrnd SPAWNAMMOODDS
+    spawn SHOTGUNAMMO
+ends
+
+state drop_shotgun
+  ifrnd SPAWNAMMOODDS
+    spawn SHOTGUNSPRITE
+ends
+
+state drop_chaingun
+  ifrnd SPAWNAMMOODDS
+  {
+    ifrnd 32
+      spawn CHAINGUNSPRITE
+    else
+      spawn BATTERYAMMO
+  }
+ends
+
+state random_wall_jibs
+  ifrnd 96
+    shoot BLOODSPLAT1
+  ifrnd 96
+    shoot BLOODSPLAT2
+  ifrnd 96
+    shoot BLOODSPLAT3
+  ifrnd 96
+    shoot BLOODSPLAT4
+  ifrnd 96
+    shoot BLOODSPLAT1
+ends
+
+state liz_body_jibs
+  ifrnd 64
+    guts LIZMANHEAD1 1
+  ifrnd 64
+    guts LIZMANLEG1 2
+  ifrnd 64
+    guts LIZMANARM1 1
+  ifrnd 48
+    spawn BLOODPOOL
+ends
+
+state rf
+  ifrnd 128
+    cstat 4
+  else
+    cstat 0
+ends

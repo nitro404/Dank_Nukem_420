@@ -1,0 +1,175 @@
+action ASHARKCRUZING 0 8 5 1 24
+action ASHARKFLEE  0 8 5 1 10
+action ASHARKATACK   0 8 5 1 6
+action ASHARKSHRUNK  0 8 5 1 24
+action ASHARKGROW  0 8 5 1 24
+action ASHARKFROZEN  0 1 5 1 24
+
+move SHARKVELS 24
+move SHARKFASTVELS 72
+move SHARKFLEEVELS 40
+
+actor SHARK SHARKSTRENGTH ASHARKCRUZING SHARKVELS randomangle geth
+  ifaction ASHARKSHRUNK
+  {
+    ifcount SHRUNKDONECOUNT
+      action ASHARKCRUZING
+    else ifcount SHRUNKCOUNT
+      sizeto 60 60
+    else
+      state genericshrunkcode
+    break
+  }
+  else
+    ifaction ASHARKGROW
+  {
+    ifcount SHRUNKDONECOUNT
+      action ASHARKCRUZING
+    else
+      ifcount SHRUNKCOUNT
+        sizeto 24 24
+    else
+      state genericgrowcode
+  }
+  else
+    ifaction ASHARKFROZEN
+  {
+    fall
+
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+
+    ifcount THAWTIME
+    {
+      action ASHARKFLEE
+      getlastpal
+      break
+    }
+    else
+      ifcount FROZENDRIPTIME
+        ifactioncount 26
+          resetactioncount
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+        break
+
+      lotsofglass 30
+      sound GLASS_BREAKING
+      addkills 1
+      killit
+    }
+    break
+  }
+  else
+    ifaction ASHARKFLEE
+  {
+    ifcount 16
+      ifrnd 48
+    {
+      action ASHARKCRUZING
+      move SHARKVELS randomangle geth
+    }
+  }
+  else
+    ifaction ASHARKCRUZING
+  {
+    ifcansee
+      ifcount 48
+        ifrnd 2
+          ifcanshoottarget
+    {
+      action ASHARKATACK
+      move SHARKFASTVELS faceplayerslow getv break
+    }
+    ifcount 32
+      ifnotmoving
+    {
+      ifrnd 128
+        move SHARKVELS randomangle geth
+      else
+        move SHARKFASTVELS randomangle geth
+    }
+  }
+  else
+    ifaction ASHARKATACK
+  {
+    ifcount 4
+    {
+      ifpdistl 1280
+      {
+        ifp palive ifcanshoottarget
+        {
+          sound DUKE_GRUNT
+          palfrom 32 32
+          addphealth SHARKBITESTRENGTH
+        }
+        action ASHARKFLEE
+        move SHARKFLEEVELS fleeenemy
+      }
+    }
+    else
+      ifnotmoving
+    {
+      ifcount 32
+      {
+        action ASHARKCRUZING
+        move SHARKVELS randomangle geth
+      }
+    }
+    else
+      ifcount 48
+        ifrnd 2
+    {
+      action ASHARKCRUZING
+      move SHARKFASTVELS randomangle geth
+    }
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      ifwasweapon GROWSPARK
+      {
+        move 0
+        cstat 0
+        action ASHARKGROW
+        sound ACTOR_GROWING
+        break
+      }
+      else
+        ifwasweapon FREEZEBLAST
+      {
+        spritepal 1
+        strength 0
+        action ASHARKFROZEN
+        sound SOMETHINGFROZE
+      }
+      else
+      {
+        sound SQUISHED
+        guts JIBS6 5
+        addkills 1
+        killit
+      }
+    }
+    else
+    {
+      ifwasweapon SHRINKSPARK
+      {
+        action ASHARKSHRUNK
+        sound ACTOR_SHRINKING
+        move 0
+        break
+      }
+      else
+        ifwasweapon GROWSPARK
+          sound EXPANDERHIT
+
+      move SHARKVELS randomangle geth
+    }
+  }
+enda

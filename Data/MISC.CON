@@ -1,0 +1,102 @@
+action ANULLACTION 0
+
+move SPAWNED_BLOOD
+
+action RIP_F 0 8 1 1 1
+actor FORCERIPPLE 0 RIP_F
+  ifactioncount 8
+    killit
+enda
+
+action WOODENHORSEFRAME  0   1   4
+action WOODENFALLFRAME  122  1   5
+
+actor HORSEONSIDE WEAKEST
+  cactor WOODENHORSE
+  action WOODENFALLFRAME
+enda
+actor WOODENHORSE WEAK WOODENHORSEFRAME
+  fall
+  ifhitweapon
+  {
+    ifdead
+    {
+      debris SCRAP1 4
+      debris SCRAP2 3
+      killit
+    }
+    else
+      action WOODENFALLFRAME
+  }
+enda
+
+useractor notenemy HOTMEAT TOUGH
+  ifaction 0
+  {
+    action ANULLACTION
+    cstat 257
+  }
+  ifhitweapon
+  {
+    ifdead
+    {
+      sound SQUISHED
+      guts JIBS5 8
+      guts JIBS6 9
+      killit
+    }
+    else
+      guts JIBS6 1
+  }
+  ifrnd 1
+    spawn WATERDRIP
+
+enda
+
+action ASPEAKERBROKE 1
+useractor notenemy SPEAKER
+  ifaction 0
+  {
+    ifhitweapon
+    {
+      stopsound STORE_MUSIC
+      soundonce STORE_MUSIC_BROKE
+      action ASPEAKERBROKE
+    }
+    else
+    {
+      ifpdistl 10240
+          soundonce STORE_MUSIC
+      cstat 289
+    }
+  }
+enda
+
+action ALAVABUBBLE
+action ALAVABUBBLEANIM 0 5 1 1 16
+
+useractor notenemy LAVABUBBLE
+  ifaction 0
+  {
+    cstat 32768
+    action ALAVABUBBLE
+  }
+  else
+    ifaction ALAVABUBBLE
+  {
+    ifcount 72
+      ifrnd 2
+    {
+      cstat 0
+      action ALAVABUBBLEANIM
+    }
+  }
+  else
+  {
+    ifactioncount 5
+    {
+      cstat 32768
+      action ALAVABUBBLE
+    }
+  }
+enda

@@ -1,0 +1,529 @@
+move MOUSEVELS 32
+
+state jibfood
+  sound SQUISHED
+  guts JIBS6 3
+  killit
+ends
+
+state breakobject
+  ifaction 0
+  {
+    action ANULLACTION
+    cstator 257
+    ifactor ROBOTMOUSE
+      clipdist 64
+  }
+  else
+    ifactor ROBOTMOUSE
+  {
+      ifdead
+      {
+        ifcount 32
+        {
+          globalsound MOUSEANNOY
+          killit
+        }
+        break
+      }
+      ifcount 64 ifrnd 6
+      {
+        ifrnd 128
+          move MOUSEVELS randomangle geth
+        else
+        {
+          ifrnd 64
+            soundonce HAPPYMOUSESND1
+          else
+            ifrnd 64
+              soundonce HAPPYMOUSESND2
+          else
+            ifrnd 64
+              soundonce HAPPYMOUSESND3
+          else
+            soundonce HAPPYMOUSESND4
+        }
+        resetcount
+      }
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      ifactor FOODOBJECT6
+        state jibfood
+      else
+        ifactor FOODOBJECT11
+          state jibfood
+      else
+        ifactor FOODOBJECT12
+          state jibfood
+      else
+        ifactor FOODOBJECT13
+          state jibfood
+      else
+        ifactor FOODOBJECT14
+          state jibfood
+      else
+        ifactor FOODOBJECT15
+          state jibfood
+      else
+        ifactor FOODOBJECT16
+          state jibfood
+      else
+        ifactor FOODOBJECT17
+          state jibfood
+      else
+        ifactor SKINNEDCHICKEN
+          state jibfood
+      else
+        ifactor SHOPPINGCART
+      {
+        debris SCRAP1 5
+        debris SCRAP2 5
+        debris SCRAP3 5
+        sound GLASS_HEAVYBREAK
+        killit
+      }
+      else
+        ifactor ROBOTDOG2
+      {
+        soundonce DEAD_DOG
+        guts JIBS2 1
+        guts JIBS3 2
+        guts JIBS6 3
+        killit
+      }
+      else
+        ifactor FEATHEREDCHICKEN
+          state jibfood
+      else
+        ifactor DOLPHIN1
+      {
+        guts JIBS2 1
+        guts JIBS3 2
+        guts JIBS4 3
+        guts JIBS5 2
+        state jibfood
+      }
+      else
+        ifactor DOLPHIN2
+      {
+        guts JIBS2 1
+        guts JIBS3 2
+        guts JIBS4 3
+        guts JIBS5 2
+        state jibfood
+      }
+      else
+        ifactor SNAKEP
+      {
+        guts JIBS2 1
+        guts JIBS3 2
+        guts JIBS4 3
+        guts JIBS5 2
+        state jibfood
+      }
+      else
+        ifactor DONUTS
+      {
+        spritepal 7
+        guts JIBS6 2
+        killit
+      }
+      else
+        ifactor DONUTS2
+      {
+        debris SCRAP1 1
+        spritepal 7
+        guts JIBS6 2
+        killit
+      }
+      else
+        ifactor MAILBAG
+        {
+          mail 30
+          debris SCRAP3 5
+          debris SCRAP4 3
+          killit
+        }
+      else
+        ifactor TEDDYBEAR
+      {
+        debris SCRAP3 5
+        spritepal 1
+        debris SCRAP3 6
+      }
+      else
+      {
+        ifrnd 128
+          sound GLASS_BREAKING
+        else
+          sound GLASS_HEAVYBREAK
+      }
+
+      ifactor CLOCK
+      {
+        cactor BROKENCLOCK
+        break
+      }
+      else
+        ifactor JOLLYMEAL
+      {
+        spawn ATOMICHEALTH
+        debris SCRAP3 1
+        debris SCRAP4 2
+      }
+      else
+        ifactor GUMBALLMACHINE
+      {
+        cactor GUMBALLMACHINEBROKE
+        strength 1
+        debris SCRAP4 2
+        lotsofglass 10
+        break
+      }
+      else
+        ifactor GUMBALLMACHINEBROKE
+      {
+        debris SCRAP3 3
+        debris SCRAP4 2
+        lotsofglass 10
+      }
+      else
+        ifactor DUKEBURGER
+      {
+        debris SCRAP3 14
+        debris SCRAP1 13
+        debris SCRAP4 12
+        debris SCRAP2 12
+        debris SCRAP5 11
+      }
+      else
+        ifactor POLICELIGHTPOLE
+      {
+        debris SCRAP3 4
+        debris SCRAP1 3
+        debris SCRAP4 2
+        debris SCRAP2 2
+        debris SCRAP5 1
+      }
+      else
+        ifactor TOPSECRET
+          paper 10
+      else
+        ifactor GUNPOWDERBARREL
+      {
+        spawn EXPLOSION2
+        sound PIPEBOMB_EXPLODE
+        hitradius 2048 WEAKEST WEAK MEDIUMSTRENGTH TOUGH
+        ifpdistl 2048
+          wackplayer
+        debris SCRAP1 10      // Weapons and ammo!
+        debris SCRAP2 13
+        debris SCRAP3 4
+        debris SCRAP4 17
+        debris SCRAP5 6
+      }
+      else
+        ifactor FLOORBASKET
+      {
+        spawn PUKE
+        debris SCRAP1 2
+        debris SCRAP3 3
+        debris SCRAP4 2
+      }
+      else
+        ifactor ROBOTMOUSE
+      {
+        debris SCRAP2 10
+        spritepal 1
+        debris SCRAP3 4
+        resetcount
+        cstat 32768
+        break
+      }
+      else
+        ifactor ROBOTPIRATE
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE1A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor MAN
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor MAN2
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE2A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE3A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE4A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE4A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE5A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+        ifactor PIRATE6A
+      {
+        debris SCRAP2 10
+        debris SCRAP1 5
+        debris SCRAP3 3
+        lotsofglass 10
+      }
+      else
+      {
+        lotsofglass 10
+        debris SCRAP4 3
+      }
+      killit
+    }
+    else
+      ifactor DOLPHIN1
+    {
+      guts JIBS6 1
+      soundonce DOLPHINSND
+      ifstrength TOUGH
+      {
+        cactor DOLPHIN2
+        sound SQUISHED
+      }
+    }
+    else
+      ifactor DOLPHIN2
+    {
+      guts JIBS6 1
+      soundonce DOLPHINSND
+    }
+    else
+      ifactor ROBOTDOG2
+    {
+      guts JIBS6 1
+      soundonce WHINING_DOG
+    }
+  }
+  else
+  {
+    ifactor CLOCK
+      nullop
+    else
+      ifactor TOPSECRET
+        nullop
+    else
+      ifactor SKINNEDCHICKEN
+        nullop
+    else
+      ifactor FEATHEREDCHICKEN
+        nullop
+    else
+      ifactor FOODOBJECT2
+        nullop
+    else
+      ifactor FOODOBJECT6
+        nullop
+    else
+      ifactor DOLPHIN1
+        nullop
+    else
+      ifactor DOLPHIN2
+        nullop
+    else
+      fall
+  }
+
+
+ends
+
+action ABURGERROTS 0 1 5
+useractor notenemy DUKEBURGER PIRATEGALSTRENGTH ABURGERROTS state breakobject enda
+
+useractor notenemy MOP WEAK state breakobject enda
+
+useractor notenemy BROOM WEAK state breakobject enda
+
+useractor notenemy WETFLOOR WEAK state breakobject enda
+
+useractor notenemy DESKLAMP WEAK state breakobject enda
+
+// useractor notenemy DUKECUTOUT WEAK state breakobject enda
+
+useractor notenemy HATRACK WEAK state breakobject enda
+
+useractor notenemy GUNPOWDERBARREL TOUGH state breakobject enda
+
+useractor notenemy COFFEEMACHINE WEAK state breakobject enda
+
+useractor notenemy TEDDYBEAR WEAK state breakobject enda
+
+useractor notenemy TOPSECRET WEAK state breakobject enda
+
+useractor notenemy ROBOTMOUSE ROBOTMOUSESTRENGTH state breakobject enda
+
+useractor notenemy MAN PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy MAN2 PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy WOMAN PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE1A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE2A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE3A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE4A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE5A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATE6A PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy ROBOTPIRATE PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy PIRATEHALF TOUGH state breakobject enda
+
+useractor notenemy CHESTOFGOLD WEAK state breakobject enda
+
+useractor notenemy ROBOTDOG PIRATEGALSTRENGTH state breakobject enda
+
+useractor notenemy ROBOTDOG2 TOUGH state breakobject enda
+
+useractor notenemy PLEASEWAIT state breakobject enda
+
+useractor notenemy FOODOBJECT1 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT2 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT3 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT4 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT5 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT6 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT7 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT8 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT9 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT10 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT11 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT12 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT13 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT14 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT15 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT16 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT17 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT18 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT19 WEAK state breakobject enda
+
+useractor notenemy FOODOBJECT20 WEAK state breakobject enda
+
+useractor notenemy JOLLYMEAL WEAK state breakobject enda
+
+useractor notenemy GUMBALLMACHINE WEAK state breakobject enda
+
+useractor notenemy GUMBALLMACHINEBROKE WEAK state breakobject enda
+
+useractor notenemy POLICELIGHTPOLE TOUGH state breakobject enda
+
+useractor notenemy CLOCK WEAK state breakobject enda
+
+useractor notenemy MAILBAG WEAK state breakobject enda
+
+useractor notenemy FEATHEREDCHICKEN WEAK state breakobject enda
+
+useractor notenemy SKINNEDCHICKEN WEAK state breakobject enda
+
+useractor notenemy HEADLAMP WEAK state breakobject enda
+
+useractor notenemy DOLPHIN1 DOLPHINSTRENGTH state breakobject enda
+
+useractor notenemy DOLPHIN2 DOLPHINSTRENGTH state breakobject enda
+
+useractor notenemy SNAKEP MEDIUMSTRENGTH state breakobject enda
+
+useractor notenemy DONUTS WEAK state breakobject enda
+
+useractor notenemy GAVALS WEAK state breakobject enda
+
+useractor notenemy GAVALS2 WEAK state breakobject enda
+
+useractor notenemy CUPS WEAK state breakobject enda
+
+useractor notenemy DONUTS2 WEAK state breakobject enda
+
+useractor notenemy FLOORBASKET WEAK state breakobject enda
+
+useractor notenemy METER WEAK state breakobject enda
+
+useractor notenemy DESKPHONE WEAK state breakobject enda
+
+useractor notenemy MACE WEAK state breakobject enda
+
+useractor notenemy SHOPPINGCART WEAK state breakobject enda
+
+useractor notenemy COFFEEMUG WEAK state breakobject enda

@@ -1,0 +1,192 @@
+action DRONEFRAMES   0   1   7   1   1
+action DRONESCREAM   0   1   7   1   1
+move DRONERUNVELS 128 64
+move DRONERUNUPVELS 128 -64
+move DRONEBULLVELS 252 -64
+move DRONEBACKWARDS -64 -64
+move DRONERISE 32 -32
+move DRONESTOPPED -16
+
+ai AIDRONEGETE DRONESCREAM DRONERUNVELS faceplayerslow getv
+ai AIDRONEWAIT DRONEFRAMES DRONESTOPPED faceplayerslow
+ai AIDRONEGETUP DRONESCREAM DRONERUNUPVELS faceplayer getv
+ai AIDRONEPULLBACK DRONEFRAMES DRONEBACKWARDS faceplayerslow
+ai AIDRONEHIT DRONESCREAM DRONEBACKWARDS faceplayer
+ai AIDRONESHRUNK DRONEFRAMES SHRUNKVELS fleeenemy
+ai AIDRONEDODGE DRONEFRAMES DRONEBULLVELS dodgebullet geth
+ai AIDRONEDODGEUP DRONEFRAMES DRONERISE getv geth
+
+state dronedead
+  addkills 1
+  debris SCRAP1 8
+  debris SCRAP2 4
+  debris SCRAP3 7
+  spawn EXPLOSION2
+  sound RPG_EXPLODE
+  hitradius 2048 15 20 25 30
+  killit
+ends
+
+state checkdronehitstate
+
+  ifdead state dronedead
+  else ifsquished state dronedead
+  else
+  {
+    sound DRON_PAIN
+    ifbulletnear
+    {
+      ifceilingdistl 64
+        ifrnd 48
+          ai AIDRONEDODGE
+      ai AIDRONEDODGEUP
+    }
+    else
+      ai AIDRONEGETE
+  }
+ends
+
+state droneshrunkstate
+  ifcount 24
+    killit
+  else
+    sizeto 1 1
+ends
+
+state checkdronenearplayer
+
+  ifp palive
+    ifpdistl 1596
+  {
+    ifcount 8
+    {
+      addkills 1
+      sound DRON_ATTACK2
+      debris SCRAP1 8
+      debris SCRAP2 4
+      debris SCRAP3 7
+      spawn EXPLOSION2
+      sound RPG_EXPLODE
+      hitradius 2048 15 20 25 30
+      killit
+    }
+    else
+      ifcount 3 nullop
+      else
+        sound LASERTRIP_ARMING
+  }
+
+ends
+
+state dronegetstate
+  ifrnd 192
+  {
+    ifcansee
+    {
+      ifbulletnear
+      {
+        ai AIDRONEDODGE
+        break
+      }
+      ifmove DRONEBULLVELS
+      {
+        ifcount 64
+          ai AIDRONEPULLBACK
+        else
+          ifnotmoving
+            ifcount 16
+              ai AIDRONEPULLBACK
+      }
+      else
+        ifcount 32
+      {
+        ifp phigher
+          move DRONEBULLVELS geth getv
+        else
+          move DRONEBULLVELS geth
+      }
+    }
+    else
+      ifrnd 1
+        operate
+  }
+ends
+
+state dronedodgestate
+  ifai AIDRONEDODGEUP
+  {
+     ifcount 8
+       ai AIDRONEGETE
+     else
+       ifnotmoving
+         ai AIDRONEGETE
+  }
+  else
+  {
+    ifcount 8
+      ai AIDRONEGETE
+    else
+      ifnotmoving
+        ai AIDRONEGETE
+  }
+ends
+
+actor DRONE DRONESTRENGTH
+  state checkdronenearplayer
+
+  ifrnd 2
+    fall
+  else
+    soundonce DRON_JETSND
+
+  ifaction 0
+    ai AIDRONEGETE
+
+  else
+    ifai AIDRONEWAIT
+  {
+    ifactioncount 4
+      ifrnd 16
+        ifcansee
+    {
+      sound DRON_ATTACK1
+      ifp phigher
+        ai AIDRONEGETUP
+      else ai AIDRONEGETE
+    }
+  }
+  else
+    ifai AIDRONEGETE
+      state dronegetstate
+  else
+    ifai AIDRONEGETUP
+      state dronegetstate
+  else
+    ifai AIDRONEPULLBACK
+  {
+    ifcount 32
+    ai AIDRONEWAIT
+  }
+  else
+    ifai AIDRONEHIT
+  {
+    ifcount 8
+      ai AIDRONEWAIT
+  }
+  else
+    ifai AIDRONESHRUNK
+      state droneshrunkstate
+  else
+    ifai AIDRONEDODGE
+      state dronedodgestate
+  else
+    ifai AIDRONEDODGEUP
+      state dronedodgestate
+
+  ifhitweapon
+    state checkdronehitstate
+
+  ifrnd 1
+    soundonce DRON_ROAM
+
+enda

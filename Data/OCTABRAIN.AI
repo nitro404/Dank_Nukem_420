@@ -1,0 +1,286 @@
+action AOCTAWALK    0   3   5   1   15
+action AOCTASTAND     0   1   5   1   15
+action AOCTASCRATCH   0   4   5   1   15
+action AOCTAHIT    30   1   1   1   10
+action AOCTASHOOT    20   1   5   1   10
+action AOCTADYING    30   8   1   1   17
+action AOCTADEAD     38   1   1   1  1
+action AOCTAFROZEN    0   1   5
+
+move OCTAWALKVELS 96 -30
+move OCTAUPVELS 96 -70
+move OCTASTOPPED 0 -30
+move OCTAINWATER 96 24
+
+ai AIOCTAGETENEMY AOCTAWALK OCTAWALKVELS seekplayer
+ai AIOCTASHOOTENEMY AOCTASHOOT OCTASTOPPED faceplayer
+ai AIOCTASCRATCHENEMY AOCTASCRATCH OCTASTOPPED faceplayerslow
+ai AIOCTAHIT AOCTAHIT OCTASTOPPED faceplayer
+ai AIOCTASHRUNK AOCTAWALK SHRUNKVELS faceplayer
+ai AIOCTAGROW AOCTASTAND OCTASTOPPED faceplayerslow
+ai AIOCTADYING AOCTADYING OCTASTOPPED faceplayer
+
+state octagetenemystate
+
+  ifcansee
+  {
+    ifactioncount 32
+    {
+      ifrnd 48
+        ifcanshoottarget
+      {
+        sound OCTA_ATTACK1
+        ai AIOCTASHOOTENEMY
+        break
+      }
+    }
+    else
+      ifpdistl 1280
+        ai AIOCTASCRATCHENEMY
+  }
+
+ends
+
+state octascratchenemystate
+  ifpdistg 1280
+    ai AIOCTAGETENEMY
+  else
+    ifcount 32
+  {
+    resetcount
+    sound OCTA_ATTACK2
+    palfrom 8 32
+    addphealth OCTASCRATCHINGPLAYER
+  }
+ends
+
+state octashootenemystate
+  ifcount 25
+  {
+    ifcount 27
+      ai AIOCTAGETENEMY
+  }
+  else
+    ifcount 24
+      shoot COOLEXPLOSION1
+  else
+    ifactioncount 6
+      resetactioncount
+ends
+
+state checkoctahitstate
+  ifwasweapon SHRINKSPARK
+  {
+    sound ACTOR_SHRINKING
+    ai AIOCTASHRUNK
+  }
+  else
+  {
+    ifdead
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        sound SOMETHINGFROZE
+        spritepal 1
+        move 0
+        action AOCTAFROZEN
+        strength 0
+        break
+      }
+
+      addkills 1
+      ifwasweapon RPG
+      {
+        sound SQUISHED
+        state standard_jibs
+        killit
+      }
+      else
+        ifwasweapon RADIUSEXPLOSION
+      {
+        sound SQUISHED
+        state standard_jibs
+        killit
+      }
+      else
+        ifwasweapon GROWSPARK
+      {
+        cstat 0
+        sound ACTOR_GROWING
+        ai AIOCTAGROW
+        break
+      }
+      else
+      {
+        state rf
+        ai AIOCTADYING
+      }
+      sound OCTA_DYING
+    }
+    else
+    {
+      ifwasweapon RPG
+      {
+        sound OCTA_DYING
+        addkills 1
+        state standard_jibs
+        killit
+      }
+      else
+        ifwasweapon GROWSPARK
+          sound EXPANDERHIT
+
+      sound OCTA_PAIN
+      spawn BLOOD
+      ifrnd 64
+        ai AIOCTAHIT
+    }
+  }
+  state random_wall_jibs
+ends
+
+state octashrunkstate
+  ifcount SHRUNKDONECOUNT
+    ai AILIZGETENEMY
+  else
+    ifcount SHRUNKCOUNT
+      sizeto 40 40
+  else
+    state genericshrunkcode
+ends
+
+
+state octadyingstate
+  ifactioncount 8
+  {
+    ifrnd 64
+      spawn BLOODPOOL
+    move OCTASTOPPED
+    action AOCTADEAD
+    break
+  }
+  else
+    ifactioncount 5 nullop
+  else
+    ifactioncount 4
+      iffloordistl 8
+        sound THUD
+ends
+
+actor OCTABRAINSTAYPUT OCTASTRENGTH
+  ai AIOCTAGETENEMY
+  cactor OCTABRAIN
+enda
+
+actor OCTABRAIN OCTASTRENGTH
+  fall
+  state checksquished
+  ifai 0
+    ai AIOCTAGETENEMY
+  else
+    ifaction AOCTADEAD
+  {
+    strength 0
+    ifcount RESPAWNACTORTIME
+      ifrespawn
+    {
+      addkills -1
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength OCTASTRENGTH
+      ai AIOCTAGETENEMY
+    }
+    ifhitweapon
+      ifwasweapon RADIUSEXPLOSION
+    {
+      state standard_jibs
+      killit
+    }
+    break
+  }
+  else ifaction AOCTAFROZEN
+  {
+    ifcount THAWTIME
+    {
+      ai AIOCTAGETENEMY
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+      {
+        ifactioncount 26
+        {
+          spawn WATERDRIP
+          resetactioncount
+        }
+      }
+
+    ifhitweapon
+    {
+      addkills 1
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+
+      lotsofglass 30
+      ifrnd 84
+        spawn BLOODPOOL
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  else
+  {
+    ifrnd 1
+      soundonce OCTA_ROAM
+
+    ifai AIOCTAGETENEMY
+      state octagetenemystate
+    else
+      ifai AIOCTAHIT
+      {
+        ifcount 8
+          ai AIOCTASHOOTENEMY
+      }
+    else
+      ifai AIOCTADYING
+      {
+        state octadyingstate
+        break
+      }
+    else
+      ifai AIOCTASCRATCHENEMY
+        state octascratchenemystate
+    else
+      ifai AIOCTASHOOTENEMY
+        state octashootenemystate
+    else
+      ifai AIOCTASHRUNK
+      {
+        state octashrunkstate
+        break
+      }
+    else
+      ifai AIOCTAGROW
+        state genericgrowcode
+
+    ifmove OCTAUPVELS nullop
+    else
+      ifp phigher
+        move OCTAUPVELS seekplayer
+    else
+      ifmove OCTAINWATER nullop
+      else
+        ifinwater
+          move OCTAINWATER seekplayer
+
+    ifhitweapon
+      state checkoctahitstate
+  }
+enda

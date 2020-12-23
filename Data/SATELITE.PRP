@@ -1,0 +1,4 @@
+actor SATELLITE TOUGH
+  //  ifmove 0 move SHUTTLEVELS getv geth
+  //  ifcount 120 move SHUTTLEVELS getv geth randomangle
+enda

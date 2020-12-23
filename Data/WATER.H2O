@@ -1,0 +1,83 @@
+action TOILETWATERFRAMES 0 4 1 1 1
+actor TOILETWATER 0 TOILETWATERFRAMES
+  ifpdistl 8192
+  {
+    soundonce WATER_GURGLE
+    ifspawnedby TOILET
+      sizeto 34 34
+    else
+    {
+      ifspawnedby WATERFOUNTAINBROKE
+        sizeto 6 15
+      else
+        ifspawnedby TOILETWATER
+          nullop
+      else
+        sizeto 24 32
+    }
+
+    ifp palive
+      ifpdistl RETRIEVEDISTANCE
+        ifp pfacing
+          ifactioncount 32
+            ifphealthl MAXPLAYERHEALTH
+              ifhitspace
+                ifcansee
+    {
+      addphealth 1
+      globalsound DUKE_DRINKING
+      resetactioncount
+    }
+  }
+enda
+
+actor WATERBUBBLEMAKER 0 0 randomangle
+  ifpdistl 3084
+    ifrnd 24
+      spawn WATERBUBBLE
+enda
+
+action BUBBLE
+action CRACKEDBUBBLE  1
+move BUBMOVE       -10 -36
+move BUBMOVEFAST     -10 -52
+
+actor WATERBUBBLE 0 BUBBLE BUBMOVE getv geth randomangle
+
+  ifaction CRACKEDBUBBLE
+  {
+    ifinwater
+      ifrnd 192
+        killit
+    ifactioncount 7
+      killit
+  }
+  else
+  {
+    ifcount 4
+    {
+      ifrnd 192
+        move BUBMOVE getv geth randomangle
+      else
+        move BUBMOVEFAST getv geth randomangle
+      resetcount
+
+      ifrnd 84
+        sizeat 8 10
+      else
+        ifrnd 84
+          sizeat 10 8
+      else
+        sizeat 9 9
+    }
+
+    ifonwater
+    {
+      iffloordistl 8
+        action CRACKEDBUBBLE
+    }
+    else
+      ifactioncount 40
+        action CRACKEDBUBBLE
+  }
+enda

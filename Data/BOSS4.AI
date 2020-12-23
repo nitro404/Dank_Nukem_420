@@ -1,0 +1,181 @@
+action ABOSS4WALK          0 4  5  1  30
+action ABOSS4DYING        40 9  1  1  20
+action ABOSS4ABOUTTOSHOOT 20 1  5  1  40
+action ABOSS4SHOOT        25 2  5  1  10
+action ABOSS4LAYIT        50 3  5  1  120
+action BOSS4FLINTCH       40 1  1  1  1
+action ABOSS4DEAD         49
+
+move BOSS4WALKVELS 128
+move BOSS4STOPPED
+
+ai AIBOSS4LAYEGGS ABOSS4WALK BOSS4WALKVELS randomangle geth
+ai AIBOSS4SHOOT ABOSS4ABOUTTOSHOOT BOSS4STOPPED faceplayer
+ai AIBOSS4DYING ABOSS4DYING BOSS4STOPPED faceplayer
+
+state boss4shootstate
+  ifaction ABOSS4ABOUTTOSHOOT
+    ifactioncount 3
+      action ABOSS4SHOOT
+
+  ifaction ABOSS4SHOOT
+  {
+    ifcount 48
+    {
+      ifrnd 4
+        ai AIBOSS4LAYEGGS
+    }
+    ifcount 26
+      ifrnd 32
+    {
+      ifrnd 128
+      {
+        sound SHORT_CIRCUIT
+        addphealth -2
+      }
+      else
+      {
+        sound DUKE_GRUNT
+        addphealth -1
+      }
+      palfrom 32 32 0 0
+    }
+  }
+
+ends
+
+state boss4layeggs
+  ifrnd 2
+    sound BOS4_ROAM
+
+  ifaction ABOSS4LAYIT
+  {
+    ifactioncount 3
+      ifcount 32
+    {
+      ai AIBOSS4LAYEGGS
+      ifrnd 32
+        move BOSS4WALKVELS furthestdir geth
+      spawn NEWBEASTHANG
+    }
+  }
+  else
+    ifcount 64
+      ifrnd 4
+  {
+    move 0
+
+    ifrnd 88
+    {
+      action ABOSS4LAYIT
+      sound BOS4_LAY
+    }
+    else
+      ifp palive
+        ifcansee
+    {
+      ai AIBOSS4SHOOT
+      sound BOS4_ATTACK
+    }
+  }
+
+ends
+
+state boss4dyingstate
+  ifaction ABOSS4DEAD
+    break
+  else
+    ifactioncount 9
+  {
+    iffloordistl 8
+      sound THUD
+
+    endofgame 52
+    action ABOSS4DEAD
+    cstat 0
+  }
+ends
+
+state checkboss4hitstate
+  ifrnd 2
+    spawn BLOODPOOL
+
+  ifdead
+  {
+    globalsound DUKE_TALKTOBOSSFALL
+
+    addkills 1
+    ai AIBOSS4DYING
+
+    sound BOS4_DYING
+    sound BOSS4_DEADSPEECH
+  }
+  else
+  {
+    soundonce BOS4_PAIN
+    debris SCRAP1 1
+    guts JIBS6 1
+
+    ifaction ABOSS4LAYIT
+      break
+
+    ifrnd 16
+    {
+      action BOSS4FLINTCH
+      move 0
+    }
+  }
+ends
+
+state boss4code
+
+  ifai 0
+    ai AIBOSS4LAYEGGS
+  else
+    ifaction BOSS4FLINTCH
+    {
+      ifactioncount 3
+        ai AIBOSS4LAYEGGS
+    }
+  else
+    ifai AIBOSS4LAYEGGS
+      state boss4layeggs
+  else
+    ifai AIBOSS4SHOOT
+      state boss4shootstate
+
+  ifai AIBOSS4DYING
+    state boss4dyingstate
+  else
+  {
+    ifhitweapon
+      state checkboss4hitstate
+    else
+      ifp palive
+        ifpdistl 1280
+      {
+        addphealth -1000
+        palfrom 63 63
+      }
+  }
+ends
+
+actor BOSS4STAYPUT BOSS4STRENGTH
+
+  fall
+  cactor BOSS4
+  spritepal 6
+  state boss4code
+  getlastpal
+
+enda
+
+actor BOSS4 BOSS4STRENGTH
+
+  fall
+  cactor BOSS4
+  spritepal 6
+  state boss4code
+  getlastpal
+
+enda

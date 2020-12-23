@@ -1,0 +1,563 @@
+action ANEWBEASTSTAND     0
+action ANEWBEASTWALKING   10  4  5  1  12
+action ANEWBEASTRUNNING   10  4  5  1  8
+action ANEWBEASTTHINK     0   2  5  1  40
+action ANEWBEASTSCRATCHING  30  3  5  1  20
+action ANEWBEASTDYING     72  8  1  1  15
+action ANEWBEASTFLINTCH   71  1  1  1  1
+action ANEWBEASTLYINGDEAD 79  1  1
+action ANEWBEASTSCREAM    50  2  5  1  40
+action ANEWBEASTJUMP      80  2  5  1  50
+action ANEWBEASTFALL      90  1  5
+action ANEWBEASTFROZEN    10  1  5
+
+action ANEWBEASTHANG      0  1  5
+useractor enemy NEWBEASTHANG NEWBEASTSTRENGTH
+  ifaction 0
+  {
+    action ANEWBEASTHANG
+    cstator 257
+
+    sizeat 40 40
+  }
+  else
+    ifhitweapon
+  {
+    cactor NEWBEAST
+    action ANEWBEASTSTAND
+    sound NEWBEAST_PAIN
+  }
+  else
+    ifspawnedby BOSS4
+      ifcount 200
+        ifrnd 1
+  {
+    cactor NEWBEAST
+    action ANEWBEASTSTAND
+    sound NEWBEAST_PAIN
+  }
+enda
+
+action ANEWBEASTHANGDEAD      -1  1  5
+useractor enemy NEWBEASTHANGDEAD TOUGH
+
+  ifaction 0
+  {
+    action ANEWBEASTHANGDEAD
+    sizeat 40 40
+    cstator 257
+  }
+  else
+    ifhitweapon
+  {
+    ifdead
+    {
+      state standard_jibs
+      spawn BLOODPOOL
+      sound SQUISHED
+      killit
+    }
+    else
+    {
+      guts JIBS6 1
+      sound SQUISHED
+    }
+  }
+enda
+
+move NEWBEASTWALKVEL 182
+move NEWBEASTRUNVEL 256
+move NEWBEASTJUMPVEL 264
+move NEWBEASTSTOP
+
+ai AINEWBEASTGETENEMY ANEWBEASTWALKING NEWBEASTWALKVEL seekplayer
+ai AINEWBEASTDODGE ANEWBEASTRUNNING NEWBEASTRUNVEL dodgebullet
+ai AINEWBEASTCHARGEENEMY ANEWBEASTRUNNING NEWBEASTRUNVEL seekplayer
+ai AINEWBEASTFLEENEMY ANEWBEASTWALKING NEWBEASTWALKVEL fleeenemy
+ai AINEWBEASTSCRATCHENEMY ANEWBEASTSCRATCHING NEWBEASTSTOP faceplayerslow
+ai AINEWBEASTJUMPENEMY ANEWBEASTJUMP NEWBEASTJUMPVEL jumptoplayer
+ai AINEWBEASTTHINK ANEWBEASTTHINK NEWBEASTSTOP
+// ai AINEWBEASTSHRUNK ANEWBEASTWALKING SHRUNKVELS fleeenemy
+ai AINEWBEASTGROW ANEWBEASTSTAND  NEWBEASTSTOP faceplayerslow
+ai AINEWBEASTDYING ANEWBEASTDYING NEWBEASTSTOP faceplayer
+ai AINEWBEASTSHOOT ANEWBEASTSCREAM NEWBEASTSTOP faceplayerslow
+ai AINEWBEASTFLINTCH ANEWBEASTFLINTCH NEWBEASTSTOP faceplayerslow
+
+
+state newbeastseekstate
+
+  ifactornotstayput
+  {
+    ifp palive
+      ifcansee
+        ifpdistl 1596
+    {
+      ai AINEWBEASTSCRATCHENEMY
+      break
+    }
+
+    ifai AINEWBEASTCHARGEENEMY
+    {
+      ifp palive
+        ifpdistl 1596
+          ifcansee
+      {
+        ai AINEWBEASTSCRATCHENEMY
+        break
+      }
+
+      ifrnd 1
+        ifpdistg 4096
+          ifp palive
+            ifcansee
+      {
+        ai AINEWBEASTSHOOT
+        break
+      }
+    }
+    else
+      ifpdistg 4096
+    {
+      ai AINEWBEASTCHARGEENEMY
+      break
+    }
+
+    iffloordistl 16
+    {
+      ifcount 32
+        ifrnd 16
+      {
+        ifceilingdistl 96 break
+        ai AINEWBEASTJUMPENEMY
+      }
+      break
+    }
+
+    ifrnd 4
+    {
+      ifnotmoving
+        operate
+    }
+    else
+      ifrnd 16
+        ifbulletnear
+    {
+      ifgapzl 128
+        ai AINEWBEASTDODGE
+      else
+        ifactornotstayput
+      {
+        ifrnd 128
+        {
+          ifceilingdistl 96 break
+          ai AINEWBEASTJUMPENEMY
+        }
+        else
+          ai AINEWBEASTDODGE
+      }
+    }
+  }
+  else
+  {
+    ifactioncount 16
+    {
+      ifp palive
+        ifpdistl 1596
+          ifcansee
+      {
+        ai AINEWBEASTSCRATCHENEMY
+        break
+      }
+    }
+    ifcount 16
+      ifrnd 32
+        move NEWBEASTWALKVEL randomangle geth
+  }
+
+ends
+
+/*
+state newbeastshrunkstate
+  ifcount SHRUNKDONECOUNT
+    ai AINEWBEASTGETENEMY
+  else
+    ifcount SHRUNKCOUNT
+      sizeto 48 40
+  else
+    state genericshrunkcode
+ends
+*/
+
+state newbeastfleestate
+  ifcount 8
+  {
+    ifrnd 64
+      ifpdistg 3500
+        ifp palive
+          ifcansee
+            ai AINEWBEASTSHOOT
+  }
+  else
+  {
+    iffloordistl 16
+    {
+      ifnotmoving
+        ai AINEWBEASTGETENEMY
+    }
+    else
+      ai AINEWBEASTGETENEMY
+    break
+  }
+ends
+
+state newbeastthinkstate
+
+  ifrnd 8
+    soundonce NEWBEAST_ROAM
+
+  ifactioncount 3
+  {
+    ifrnd 128
+    {
+      ifpdistg 3500
+        ifp palive
+          ifcansee
+            ai AINEWBEASTSHOOT
+    }
+    else
+      ai AINEWBEASTGETENEMY
+  }
+
+  ifrnd 16
+    ifbulletnear
+  {
+    ifgapzl 96
+      ai AINEWBEASTDODGE
+    else
+    {
+      ifrnd 128
+      {
+        ifceilingdistl 144 break
+        ai AINEWBEASTJUMPENEMY
+      }
+      else
+        ai AINEWBEASTDODGE
+    }
+  }
+ends
+
+state newbeastscratchstate
+  ifcount 20
+    ifrnd 8
+  {
+    ifcansee
+      ifpdistl 2048
+    {
+      ifrnd 128
+        ai AINEWBEASTFLEENEMY
+      break
+    }
+    ifrnd 80
+      ai AINEWBEASTTHINK
+    else
+      ai AINEWBEASTGETENEMY
+  }
+
+  ifactioncount 3
+  {
+    ifpdistg 1596
+      ai AINEWBEASTTHINK
+    else ifp palive ifcansee
+    {
+      palfrom 16 16
+      addphealth NEWBEASTSCRATCHAMOUNT
+      sound DUKE_GRUNT
+      resetactioncount
+      resetcount
+    }
+  }
+  else
+    ifcount 15
+      nullop
+  else
+    ifcount 14
+  {
+    ifpdistl 1596
+      soundonce NEWBEAST_ATTACK
+    else
+      soundonce NEWBEAST_ATTACKMISS
+  }
+ends
+
+state checknewbeasthit
+  spawn BLOOD
+/*
+  ifai AINEWBEASTSHRUNK
+  {
+    addkills 1
+    sound SQUISHED
+    state standard_jibs
+    killit
+  }
+*/
+  ifdead
+  {
+    ifwasweapon FREEZEBLAST
+    {
+      sound SOMETHINGFROZE
+      spritepal 1
+      move 0
+      action ANEWBEASTFROZEN
+      strength 0
+      break
+    }
+
+    ifwasweapon GROWSPARK
+    {
+      cstat 0
+      sound ACTOR_GROWING
+      ai AINEWBEASTGROW
+      break
+    }
+
+    addkills 1
+
+    ifwasweapon RPG
+    {
+      sound SQUISHED
+      state liz_body_jibs
+      state standard_jibs
+      killit
+    }
+    else
+      ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      state liz_body_jibs
+      state standard_jibs
+      killit
+    }
+    else
+    {
+      state rf
+      ai AINEWBEASTDYING
+      ifrnd 64
+        spawn BLOODPOOL
+    }
+    sound NEWBEAST_DYING
+  }
+  else
+  {
+    sound NEWBEAST_PAIN
+    ifwasweapon GROWSPARK
+      sound EXPANDERHIT
+/*
+//  The alien is immune to the shrinker
+    ifwasweapon SHRINKSPARK
+    {
+      sound ACTOR_SHRINKING
+      ai AINEWBEASTSHRUNK
+      break
+    }
+*/
+    state random_wall_jibs
+    ifrnd 32
+      ai AINEWBEASTFLINTCH
+    else
+      ifrnd 32
+        ifpdistg 3500
+          ifp palive
+            ifcansee
+              ai AINEWBEASTSHOOT
+  }
+ends
+
+state newbeastjumpstate
+  ifaction ANEWBEASTFALL
+  {
+    iffloordistl 16
+      ai AINEWBEASTGETENEMY
+  }
+  else
+    ifcount 32
+      action ANEWBEASTFALL
+ends
+
+state newbeastdyingstate
+  ifaction ANEWBEASTLYINGDEAD
+  {
+    strength 0
+    ifhitweapon
+      ifwasweapon RADIUSEXPLOSION
+    {
+      sound SQUISHED
+      state standard_jibs
+      killit
+    }
+    ifcount RESPAWNACTORTIME
+      ifrespawn
+    {
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength NEWBEASTSTRENGTH
+      ai AINEWBEASTGETENEMY
+    }
+  }
+  else
+    ifai AINEWBEASTDYING
+      ifactioncount 7
+  {
+    iffloordistl 8
+      sound THUD
+    move NEWBEASTSTOP
+    action ANEWBEASTLYINGDEAD
+  }
+ends
+
+state newbeastdodgestate
+  ifcount 13
+    ai AINEWBEASTGETENEMY
+ends
+
+useractor enemystayput NEWBEASTSTAYPUT NEWBEASTSTRENGTH ai AINEWBEASTGETENEMY cstator 257 cactor NEWBEAST enda
+useractor enemy NEWBEASTJUMP NEWBEASTSTRENGTH ai AINEWBEASTJUMPENEMY cstator 257 cactor NEWBEAST enda
+
+state newbeastcode
+  state checksquished
+  ifai 0
+  {
+    cstator 257
+    ai AINEWBEASTGETENEMY
+  }
+  else
+    ifaction ANEWBEASTLYINGDEAD
+  {
+    fall
+    state newbeastdyingstate
+    break
+  }
+  else
+    ifaction ANEWBEASTFROZEN
+  {
+    ifcount THAWTIME
+    {
+      ai AINEWBEASTGETENEMY
+      spritepal 0
+    }
+    else
+      ifcount FROZENDRIPTIME
+    {
+      ifactioncount 26
+      {
+        spawn WATERDRIP
+        resetactioncount
+      }
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+      addkills 1
+
+      ifrnd 84
+        spawn BLOODPOOL
+      lotsofglass 30
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+        pkick
+    break
+  }
+  else
+    ifai AINEWBEASTJUMPENEMY
+      state newbeastjumpstate
+  else
+  {
+    fall
+    ifai AINEWBEASTGETENEMY
+      state newbeastseekstate
+    else
+      ifai AINEWBEASTCHARGEENEMY
+        state newbeastseekstate
+    else
+      ifai AINEWBEASTFLINTCH
+    {
+      ifcount 8
+        ai AINEWBEASTGETENEMY
+    }
+
+    else
+      ifai AINEWBEASTDODGE
+        state newbeastdodgestate
+    else
+      ifai AINEWBEASTSCRATCHENEMY
+        state newbeastscratchstate
+    else
+      ifai AINEWBEASTFLEENEMY
+        state newbeastfleestate
+    else
+      ifai AINEWBEASTTHINK
+        state newbeastthinkstate
+/*
+    else
+      ifai AINEWBEASTSHRUNK
+        state newbeastshrunkstate
+*/
+    else
+      ifai AINEWBEASTGROW
+        state genericgrowcode
+    else
+      ifai AINEWBEASTDYING
+        state newbeastdyingstate
+    else
+      ifai AINEWBEASTSHOOT
+    {
+      ifp pshrunk
+        ai AINEWBEASTGETENEMY
+      else
+        ifcount 26
+          ai AINEWBEASTGETENEMY
+      else
+        ifcount 25
+          shoot SHRINKER
+      else
+      {
+        ifcount 5
+          nullop
+        else
+          ifcount 4
+            sound NEWBEAST_SPIT
+      }
+    }
+  }
+
+  ifhitweapon
+    state checknewbeasthit
+ends
+
+
+useractor enemy NEWBEAST NEWBEASTSTRENGTH
+  fall
+  ifaction 0
+  {
+    cstator 257
+    sizeat 40 40
+    ai AINEWBEASTDODGE
+  }
+  ifaction ANEWBEASTFROZEN
+    state newbeastcode
+  else
+  {
+    spritepal 6
+    state newbeastcode
+    ifaction ANEWBEASTFROZEN
+      break
+    getlastpal
+  }
+enda

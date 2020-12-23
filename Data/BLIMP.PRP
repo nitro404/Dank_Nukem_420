@@ -1,0 +1,45 @@
+action BLIMPWAITTORESPAWN
+
+state blimphitstate
+  cstat 0
+  spawn FIRSTGUNSPRITE
+  spawn EXPLOSION2
+
+  debris SCRAP1 40      // Weapons and ammo!
+  debris SCRAP2 32
+  debris SCRAP3 32
+  debris SCRAP4 32
+  debris SCRAP5 32
+
+  sound PIPEBOMB_EXPLODE
+  ifrespawn
+  {
+    action BLIMPWAITTORESPAWN
+    count 0
+    cstat 32768
+  }
+  else
+    killit
+ends
+
+actor BLIMP 1
+
+  ifaction BLIMPWAITTORESPAWN
+  {
+    ifcount BLIMPRESPAWNTIME
+    {
+      action 0
+      cstat 0
+    }
+    break
+  }
+
+  ifhitweapon
+  {
+    ifwasweapon RADIUSEXPLOSION
+      state blimphitstate
+    ifwasweapon RPG
+      state blimphitstate
+    strength 1
+  }
+enda

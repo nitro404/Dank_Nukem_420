@@ -1,0 +1,17 @@
+actor FECES
+  ifcount 24
+  {
+    ifpdistl RETRIEVEDISTANCE
+    {
+      ifrnd SWEARFREQUENCY
+        soundonce DUKE_STEPONFECES
+
+      sound STEPNIT
+
+      spawn BLOODPOOL   // Will be brown
+      killit
+    }
+  }
+  else
+    sizeto 32 32
+enda

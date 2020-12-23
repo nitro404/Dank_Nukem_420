@@ -1,0 +1,6 @@
+actor MIKE
+  ifp pfacing
+    ifpdistl 1280
+      ifhitspace
+        mikesnd
+enda

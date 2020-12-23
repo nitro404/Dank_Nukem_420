@@ -1,0 +1,24 @@
+// Music will not play if the .MID file excedes 72000 bytes.
+
+// If you are an owner of a Gravis Ultrasound and wish to change the
+// MIDI files, you may want to delete the ULTRAMID.INI file that we
+// supply since it does not contain a full General MIDI patch set.
+// Deleting the ULTRAMID.INI will cause the game to use the file found
+// in your Ultrasound directory.  Remember to keep a backup of ours,
+// or the music might not sound as good!
+
+// Music for title and end
+music 0 FOTY.mid BRIEFING.MID
+
+// Music for the individual levels
+music 1 stalker.mid dethtoll.mid streets.mid watrwld1.mid snake1.mid
+        thecall.mid ahgeez.mid dethtoll.mid streets.mid watrwld1.mid snake1.mid
+
+music 2 futurmil.mid storm.mid gutwrnch.mid robocrep.mid stalag.mid 
+       pizzed.mid alienz.mid xplasma.mid alfredh.mid gloomy.mid intents.mid
+
+music 3 inhiding.mid FATCMDR.mid NAMES.MID subway.mid invader.mid gotham.mid
+        233c.mid lordofla.mid urban.mid spook.mid whomp.mid
+
+music 4 missimp.mid prepd.mid bakedgds.mid cf.mid lemchill.mid
+       pob.mid warehaus.mid layers.mid floghorn.mid depart.mid restrict.mid
