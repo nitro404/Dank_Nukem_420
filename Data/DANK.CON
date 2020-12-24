@@ -51,6 +51,7 @@ include BOSS1.AI     // battlelord
 include BOSS2.AI     // overlord
 include BOSS3.AI     // cycloid emperor
 include BOSS4.AI     // alien queen
+include SKELETON.AI  // trumpet skeleton
 
 // Below is example code that ADDS enemies/items in Duke Nukem 3D.
 
