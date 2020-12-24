@@ -21,8 +21,8 @@ definequote 16        SWITCH OPERATED ONLY!
 definequote 17        1337 HAX ENGAGED
 definequote 18        1337 HAX DISENGAGED
 definequote 19        ATOMIC HEALTH!
-definequote 20        CROSSHAIR: ON
-definequote 21        CROSSHAIR: OFF
+definequote 20        HIT MARKER: ON
+definequote 21        HIT MARKER: OFF
 definequote 22        YOU'RE TOO GOOD TO BE CHEATING!
 definequote 23        MESSAGES: ON
 definequote 24        MESSAGES: OFF
