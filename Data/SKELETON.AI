@@ -1,0 +1,72 @@
+define SKELETON         5120
+define SKELETONSTRENGTH 100
+
+action ASKELETONIDLE    0 1 1 1
+action ASKELETONWALK    0 4 5 1 10
+action ASKELETONATTACK 25 5 1 1 10
+action ASKELETONDIE    30 7 1 1 10
+action ASKELETONDOOT   40 2 5 1 5
+
+move SKELETONRUNVELS 120
+
+ai AISKELETONIDLE         ASKELETONIDLE 0
+ai AISKELETONSEEKENEMY    ASKELETONWALK SKELETONRUNVELS seekplayer geth
+ai AISKELETONCHARGEENEMY  ASKELETONWALK SKELETONRUNVELS faceplayer geth
+ai AISKELETONATTACK       ASKELETONATTACK 0 faceplayer
+ai AISKELETONDODGE        ASKELETONWALK SKELETONRUNVELS dodgebullet geth
+ai AISKELETONDOOT         ASKELETONDOOT 0 faceplayer
+
+useractor enemy SKELETON SKELETONSTRENGTH
+  fall
+
+  state checksquished
+
+  ifai 0 {
+    ai AISKELETONSEEKENEMY
+  }
+
+  ifbulletnear
+  {
+    ai AISKELETONDODGE
+  }
+
+  ifai AISKELETONSEEKENEMY
+    ifactornotstayput
+      ifp palive
+        ifcansee
+  {
+    ai AISKELETONCHARGEENEMY
+  }
+  else
+    ifai AISKELETONCHARGEENEMY
+      ifactornotstayput
+        ifp palive
+          ifcansee
+            ifpdistl 1024
+  {
+    ai AISKELETONATTACK
+  }
+  else
+    ifai AISKELETONATTACK
+      ifactornotstayput
+  {
+    ifcansee
+    {
+      ifpdistl 1024
+        nullop
+      else
+        ai AISKELETONCHARGEENEMY
+    }
+    else
+    {
+      ai AISKELETONSEEKENEMY
+    }
+  }
+  else
+    ifai AISKELETONDOOT
+      ifcount 64
+  {
+    ai AISKELETONSEEKENEMY
+    resetcount
+  }
+enda
