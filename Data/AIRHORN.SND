@@ -162,8 +162,8 @@ definesound PISTOL_FIRE         deagle.wav      -64     0   254   0   0
 definesound EJECT_CLIP          clipout.wav       0     0     3   0   0
 definesound INSERT_CLIP         clipin.wav        512   512   3   0   0
 definesound CHAINGUN_FIRE       INTRVNTN.WAV     -204 -204  254   0   512
-definesound SHOTGUN_FIRE        shotgun7.voc      0    512    254 0   0
-definesound SHOTGUN_COCK        shotgnck.voc      96    192   3   0   0
+definesound SHOTGUN_FIRE        ZAPPER.WAV        0    512    254 0   0
+definesound SHOTGUN_COCK        BATTERY.WAV       96    192   3   0   0
 definesound RPG_SHOOT           rpgfire.voc       -32   0     4   0   0
 definesound FLY_BY              flyby.voc         -256  256   3   0   0
 definesound RPG_EXPLODE         bombexpl.voc      -1024 1024  128 0   0
