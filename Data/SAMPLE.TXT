@@ -15,7 +15,7 @@ definequote 10        SQUISH!
 definequote 11        ALL DOORS UNLOCKED
 definequote 12        USED STEROIDS
 definequote 13        PRESS USE TO RESTART LEVEL
-definequote 14        AMMO FOR DEVASTATOR
+definequote 14        WATER FOR SUPER SOAKERS!
 definequote 15        DEACTIVATED
 definequote 16        SWITCH OPERATED ONLY!
 definequote 17        1337 HAX ENGAGED
@@ -58,7 +58,7 @@ definequote 53        JETPACK OFF
 definequote 54        INTERVENTION!
 definequote 55        MOUNTAIN DEW CODE RED!
 definequote 56        MOUNTAIN DEW LAUNCHER!
-definequote 57        SHOTGUN
+definequote 57        NINTENDO ZAPPER!
 definequote 58        LASER TRIPBOMB!
 definequote 59        FREEZETHROWER!
 definequote 60        GOT SHRINKER/EXPANDER!
@@ -70,7 +70,7 @@ definequote 65        .50 ACTION EXPRESS MAG!
 definequote 66        AMMO FOR FREEZETHROWER!
 definequote 67        BOOTS OFF
 definequote 68        BOOTS ON
-definequote 69        AMMO FOR SHOTGUN
+definequote 69        BATTERIES FOR NINTENDO ZAPPER!
 definequote 70        BLUE ACCESS CARD REQUIRED
 definequote 71        RED ACCESS CARD REQUIRED
 definequote 72        YELLOW ACCESS CARD REQUIRED
@@ -88,7 +88,7 @@ definequote 83        FOLLOW MODE OFF
 definequote 84        FOLLOW MODE ON
 definequote 85        RUN MODE OFF
 definequote 86        RUN MODE ON
-definequote 87        DEVASTATOR WEAPON
+definequote 87        SUPER SOAKERS!
 definequote 88        JET PACK
 definequote 89        AIRTANK
 definequote 90        STEROIDS
