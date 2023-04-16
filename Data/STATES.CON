@@ -37,7 +37,7 @@ state jib_sounds
         ifrnd 128
           globalsound MDEVSPEECH
         else
-          globalsound JIBBED_ACTOR5
+          globalsound JIBBED_ACTOR1
       }
     }
     else
@@ -64,7 +64,7 @@ state jib_sounds
         ifrnd 128
         {
           ifrnd 128
-            globalsound JIBBED_ACTOR6
+            globalsound JIBBED_ACTOR15
           else
             globalsound JIBBED_ACTOR4
         }
@@ -189,7 +189,7 @@ state randgetweapsnds
     globalsound DUKE_GETWEAPON1
   else
     ifrnd 96
-      globalsound DUKE_GETWEAPON2
+      globalsound DUKE_GETWEAPON4
   else
     ifrnd 128
       globalsound DUKE_GETWEAPON3
