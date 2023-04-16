@@ -450,6 +450,10 @@ define JIBS2 2250
 define JIBS3 2255
 define JIBS4 2260
 define JIBS5 2265
+// TODO: add bone images:
+define BONE1 2245
+define BONE2 2250
+define BONE3 2255
 define BURNING 2270
 define FIRE 2271
 define JIBS6 2286
@@ -840,7 +844,7 @@ define DUKE_BREATHING                  23
 define DUKE_EXHALING                   24
 define DUKE_GASP                       25
 define SLIM_RECOG                      26
-// define ENDSEQVOL3SND1                  27
+define DOOT                            27
 define DUKE_URINATE                    28
 define ENDSEQVOL3SND2                  29
 define ENDSEQVOL3SND3                  30

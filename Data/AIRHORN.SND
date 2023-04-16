@@ -350,7 +350,6 @@ definesound GENERIC_AMBIENCE23     2ride06.voc     0   0   255 4   0
 
 definesound SUPERMARKET            aisle402.voc    0   0   0   4   0
 
-
 definesound FIRE_CRACKLE           fire09.voc       0   0   254 2   0
 definesound DUMPSTER_MOVE          grind.voc       0   0   0   0   0
 
@@ -388,9 +387,9 @@ definesound SPACE_DOOR3      hydro27.voc      0   0   0    0   8192
 definesound SPACE_DOOR4      hydro34.voc      0   0   0    0   0
 definesound SPACE_DOOR5      hydro40.voc      0   0   0    0   0
 
- definesound SPACE_AMBIENCE1   monolith.voc      0   0   0  16  0
- definesound SPACE_AMBIENCE2   hydro50.voc       0   0   0  16  0
- definesound VAULT_DOOR        vault04.voc      0   0   0   0   0
+definesound SPACE_AMBIENCE1   monolith.voc      0   0   0  16  0
+definesound SPACE_AMBIENCE2   hydro50.voc       0   0   0  16  0
+definesound VAULT_DOOR        vault04.voc      0   0   0   0   0
 
 definesound ALIEN_ELEVATOR1   hydro43.voc       0   0   0  0   0
 definesound ALIEN_DOOR1       adoor1.voc        0   0   0  0   0
@@ -493,3 +492,6 @@ definesound HORNSND                shorn1.voc      0   0   255  2    0
 definesound BELLSND                sbell1a.voc     0   0   255  2    0
 definesound GOAWAY                 goaway.voc      0   0    4   0    0
 definesound JOKE                   joke.voc        0   0   128  0    0
+
+// Skeleton
+definesound DOOT                   DOOT.WAV        0   0    3   0   512

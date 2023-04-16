@@ -6,25 +6,270 @@ action ASKELETONWALK    0 4 5 1 10
 action ASKELETONATTACK 25 5 1 1 10
 action ASKELETONDIE    30 7 1 1 10
 action ASKELETONDOOT   40 2 5 1 5
+action ASKELETONDEAD   37 1 1 1 1
+action ASKELETONFROZEN  0 1 5
+action ASKELETONGROW    0
 
 move SKELETONRUNVELS 120
+move SKELETONSTOPPED
 
-ai AISKELETONIDLE         ASKELETONIDLE 0
-ai AISKELETONSEEKENEMY    ASKELETONWALK SKELETONRUNVELS seekplayer geth
-ai AISKELETONCHARGEENEMY  ASKELETONWALK SKELETONRUNVELS faceplayer geth
-ai AISKELETONATTACK       ASKELETONATTACK 0 faceplayer
-ai AISKELETONDODGE        ASKELETONWALK SKELETONRUNVELS dodgebullet geth
-ai AISKELETONDOOT         ASKELETONDOOT 0 faceplayer
+ai AISKELETONIDLE         ASKELETONIDLE   SKELETONSTOPPED
+ai AISKELETONSEEKENEMY    ASKELETONWALK   SKELETONRUNVELS seekplayer  geth
+ai AISKELETONCHARGEENEMY  ASKELETONWALK   SKELETONRUNVELS faceplayer  geth
+ai AISKELETONATTACK       ASKELETONATTACK SKELETONSTOPPED faceplayer
+ai AISKELETONDODGE        ASKELETONWALK   SKELETONRUNVELS dodgebullet geth
+ai AISKELETONDOOT         ASKELETONDOOT   SKELETONSTOPPED faceplayer
+ai AISKELETONSHRINK       ASKELETONWALK   SHRUNKVELS      fleeenemy
+ai AISKELETONGROW         ASKELETONGROW   SKELETONSTOPPED faceplayerslow
+ai AISKELETONDYING        ASKELETONDIE    SKELETONSTOPPED faceplayer
 
-useractor enemy SKELETON SKELETONSTRENGTH
+state bone_jibs
+  guts JIBS2 1
+ends
+
+useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
+  sizeat 40 40
+
   fall
 
   state checksquished
 
-  ifai 0 {
-    ai AISKELETONSEEKENEMY
+  ifaction ASKELETONIDLE {
+    cstat 257
+
+    ifrnd 64 {
+      ai AISKELETONDOOT
+    }
+    else {
+      ai AISKELETONSEEKENEMY
+    }
+  }
+  else
+    ifaction ASKELETONDEAD
+  {
+    ifrespawn
+      ifcount RESPAWNACTORTIME
+    {
+      spawn TRANSPORTERSTAR
+      cstat 257
+      strength SKELETONSTRENGTH
+      ai AISKELETONSEEKENEMY
+    }
+    else
+    {
+      strength 0
+
+      ifhitweapon
+        ifwasweapon RADIUSEXPLOSION
+      {
+        state bone_jibs
+        sound SQUISHED
+        killit
+      }
+      break
+    }
+  }
+  else
+    ifaction ASKELETONFROZEN
+  {
+    ifcount THAWTIME
+    {
+      ai AISKELETONSEEKENEMY
+      getlastpal
+    }
+    else
+      ifcount FROZENDRIPTIME
+        ifrnd 8
+    {
+          spawn WATERDRIP
+    }
+
+    ifhitweapon
+    {
+      ifwasweapon FREEZEBLAST
+      {
+        strength 0
+        break
+      }
+
+// TODO: spawn bones with frozen pal
+
+      addkills 1
+      state bone_jibs
+      lotsofglass 30
+      sound GLASS_BREAKING
+      killit
+    }
+    ifp pfacing
+      ifpdistl FROZENQUICKKICKDIST
+    {
+        pkick
+    }
+
+    break
+  }
+  else
+    ifai AISKELETONDYING
+  {
+    ifactioncount 7
+    {
+      state rf
+
+      state bone_jibs
+// TODO: bone sound
+
+      iffloordistl 8
+      {
+        sound THUD
+      }
+
+      action ASKELETONDEAD
+      move SKELETONSTOPPED
+
+      break
+    }
+  }
+/*
+  else
+    ifai ASKELETONHIT
+  {
+    ifactioncount 3
+    {
+      ai AISKELETONSEEKENEMY
+    }
+  }
+*/
+  else
+    ifai AISKELETONSHRINK
+  {
+    ifcount SHRUNKDONECOUNT
+    {
+      ai AISKELETONSEEKENEMY
+    }
+    else
+      ifcount SHRUNKCOUNT
+    {
+        sizeto 20 20
+    }
+    else
+    {
+      state genericshrunkcode
+    }
+  }
+  else
+  {
+    ifai AISKELETONSEEKENEMY
+      ifactornotstayput
+        ifp palive
+          ifcansee
+    {
+      ai AISKELETONCHARGEENEMY
+    }
+    else
+      ifai AISKELETONCHARGEENEMY
+        ifactornotstayput
+          ifp palive
+            ifcansee
+              ifpdistl 1024
+    {
+      ai AISKELETONATTACK
+    }
+    else
+      ifai AISKELETONATTACK
+        ifactornotstayput
+    {
+      ifcansee
+      {
+        ifpdistl 1024
+          nullop
+        else
+          ai AISKELETONCHARGEENEMY
+      }
+      else
+      {
+        ai AISKELETONSEEKENEMY
+      }
+    }
+
+// TODO: missing stuff
+
+    ifhitweapon
+    {
+      state bone_jibs
+
+      ifdead
+      {
+        ifwasweapon GROWSPARK
+        {
+          sound ACTOR_GROWING
+          ai AISKELETONGROW
+          break
+        }
+
+        addkills 1
+
+        ifwasweapon FREEZEBLAST
+        {
+          sound SOMETHINGFROZE
+          spritepal 1
+          move 0
+          action ASKELETONFROZEN
+          strength 0
+          break
+        }
+
+        ifwasweapon RADIUSEXPLOSION
+        {
+          sound SQUISHED
+          state bone_jibs
+          killit
+        }
+        else
+          ifwasweapon RPG
+        {
+          sound SQUISHED
+          state bone_jibs
+          killit
+        }
+        else
+        {
+          ai AISKELETONDYING
+// TODO: dying sound
+        }
+      }
+      else
+      {
+// TODO: bone sound
+        state bone_jibs
+
+        ifwasweapon SHRINKSPARK
+        {
+          sound ACTOR_SHRINKING
+          ai AISKELETONSHRINK
+        }
+        else
+          ifwasweapon GROWSPARK
+        {
+          sound EXPANDERHIT
+        }
+        else
+        {
+// TODO: do something in response to being attacked
+        }
+      }
+    }
   }
 
+// add chance to respawn
+// add bone sounds
+// add death animation
+// add trumpet
+// add normal attack sound
+// add random chance to do some special attack
+// add custom palette versions?
+// see minecraft mod
+
+/*
   ifbulletnear
   {
     ai AISKELETONDODGE
@@ -66,7 +311,9 @@ useractor enemy SKELETON SKELETONSTRENGTH
     ifai AISKELETONDOOT
       ifcount 64
   {
+    sound DOOT
     ai AISKELETONSEEKENEMY
     resetcount
   }
+*/
 enda
