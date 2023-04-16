@@ -848,7 +848,8 @@ define DOOT                            27
 define DUKE_URINATE                    28
 define ENDSEQVOL3SND2                  29
 define ENDSEQVOL3SND3                  30
-define DUKE_PASSWIND                   32
+define SKELETON_HIT                    31
+define SKELETON_DIE                    32
 define DUKE_CRACK                      33
 define SLIM_ATTACK                     34
 define SOMETHINGHITFORCE               35

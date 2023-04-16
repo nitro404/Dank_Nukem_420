@@ -116,7 +116,7 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
       state rf
 
       state bone_jibs
-// TODO: bone sound
+      sound SKELETON_HIT
 
       iffloordistl 8
       {
@@ -234,13 +234,13 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
         else
         {
           ai AISKELETONDYING
-// TODO: dying sound
+          sound SKELETON_DIE
         }
       }
       else
       {
-// TODO: bone sound
         state bone_jibs
+        sound SKELETON_HIT
 
         ifwasweapon SHRINKSPARK
         {
