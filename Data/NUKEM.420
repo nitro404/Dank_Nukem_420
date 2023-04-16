@@ -861,7 +861,7 @@ define DUKE_ONWATER                    40
 define DUKE_DEAD                       41
 define DUKE_LAND                       42
 define DUKE_WALKINDUCTS                43
-define DUKE_GLAD                       44
+define SKELETON_SLAP                   44
 define DUKE_YES                        45
 define DUKE_HEHE                       46
 define DUKE_SHUCKS                     47

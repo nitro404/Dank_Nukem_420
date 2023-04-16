@@ -181,9 +181,26 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
       ifcansee
       {
         ifpdistl 1024
-          nullop
+        {
+          ifcount 15
+          {
+            resetcount
+          }
+          else
+            ifcount 6
+          {
+              nullop
+          }
+          else
+            ifcount 5
+          {
+            sound SKELETON_SLAP
+          }
+        }
         else
+        {
           ai AISKELETONCHARGEENEMY
+        }
       }
       else
       {

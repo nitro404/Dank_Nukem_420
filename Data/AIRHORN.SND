@@ -497,3 +497,4 @@ definesound JOKE                   joke.voc        0   0   128  0    0
 definesound DOOT                   DOOT.WAV        0   0    3   0   512
 definesound SKELETON_HIT           SKELEHIT.WAV    0   0    3   0   512
 definesound SKELETON_DIE           SKELEDIE.WAV    0   0    3   0   512
+definesound SKELETON_SLAP          SKELSLAP.WAV    0   0    3   0   512
