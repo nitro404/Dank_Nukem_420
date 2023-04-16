@@ -194,7 +194,32 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
           else
             ifcount 5
           {
+            palfrom 8 32
+            addphealth -10
             sound SKELETON_SLAP
+
+            ifphealthl 30
+            {
+              ifrnd 192
+              {
+                wackplayer
+              }
+            }
+            else
+              ifphealthl 50
+            {
+              ifrnd 128
+              {
+                wackplayer
+              }
+            }
+            else
+            {
+              ifrnd 64
+              {
+                wackplayer
+              }
+            }
           }
         }
         else
