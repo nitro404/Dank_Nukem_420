@@ -1,12 +1,24 @@
 define SKELETON         5120
 define SKELETONSTRENGTH 100
+define DOOT             27
+define SKELETON_HIT     31
+define SKELETON_DIE     32
+define SKELETON_SLAP    44
+define BONE1            5157
+define BONE2            5158
+define BONE3            5159
+
+definesound DOOT                   DOOT.WAV        0   0    3   0   512
+definesound SKELETON_HIT           SKELEHIT.WAV    0   0    3   0   512
+definesound SKELETON_DIE           SKELEDIE.WAV    0   0    3   0   512
+definesound SKELETON_SLAP          SKELSLAP.WAV    0   0    3   0   512
 
 action ASKELETONIDLE    0 1 1 1
 action ASKELETONWALK    0 4 5 1 10
 action ASKELETONATTACK 25 5 1 1 10
 action ASKELETONDIE    30 7 1 1 10
 action ASKELETONDOOT   40 2 5 1 5
-action ASKELETONDEAD   37 1 1 1 1
+action ASKELETONDEAD   36 1 1 1 1
 action ASKELETONFROZEN  0 1 5
 action ASKELETONGROW    0
 
@@ -23,26 +35,83 @@ ai AISKELETONSHRINK       ASKELETONWALK   SHRUNKVELS      fleeenemy
 ai AISKELETONGROW         ASKELETONGROW   SKELETONSTOPPED faceplayerslow
 ai AISKELETONDYING        ASKELETONDIE    SKELETONSTOPPED faceplayer
 
+state bonestate
+  sizeat 10 10
+
+  fall
+
+  ifaction 0
+  {
+    action ANULLACTION
+  }
+
+  ifhitweapon
+  {
+    ifdead
+    {
+      ifrnd 128
+      {
+        sound SKELETON_HIT
+      }
+
+      ifrnd 128
+      {
+        debris SCRAP1 2
+      }
+
+      ifrnd 96
+      {
+        debris SCRAP2 1
+      }
+
+      ifrnd 64
+      {
+        debris SCRAP3 2
+      }
+
+      killit
+    }
+  }
+ends
+
+useractor notenemy BONE1 WEAK
+  state bonestate
+enda
+
+useractor notenemy BONE2 WEAK
+  state bonestate
+enda
+
+useractor notenemy BONE3 WEAK
+  state bonestate
+enda
+
 state bone_jibs
-  guts JIBS2 1
+  ifrnd 64
+  {
+    spawn BONE1
+  }
+  else
+    ifrnd 48
+  {
+    spawn BONE2
+  }
+  else
+    ifrnd 32
+  {
+    spawn BONE3
+  }
 ends
 
 useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
-  sizeat 40 40
-
   fall
 
   state checksquished
 
-  ifaction ASKELETONIDLE {
+  ifaction ASKELETONIDLE
+  {
     cstat 257
-
-    ifrnd 64 {
-      ai AISKELETONDOOT
-    }
-    else {
-      ai AISKELETONSEEKENEMY
-    }
+    ai AISKELETONSEEKENEMY
   }
   else
     ifaction ASKELETONDEAD
@@ -81,7 +150,7 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
       ifcount FROZENDRIPTIME
         ifrnd 8
     {
-          spawn WATERDRIP
+      spawn WATERDRIP
     }
 
     ifhitweapon
@@ -149,11 +218,32 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
     else
       ifcount SHRUNKCOUNT
     {
-        sizeto 20 20
+        sizeto 40 40
     }
     else
     {
       state genericshrunkcode
+    }
+  }
+  else
+    ifai AISKELETONGROW
+  {
+    ifcount 32
+    {
+      debris SCRAP1 2
+      debris SCRAP2 3
+      debris SCRAP3 1
+      addkills 1
+      sound SQUISHED
+      sound PIPEBOMB_EXPLODE
+      hitradius 2048 60 70 80 90
+      spawn EXPLOSION2
+      killit
+    }
+    else
+    {
+      sizeto 200 200
+      break
     }
   }
   else
@@ -310,6 +400,8 @@ useractor enemy SKELETON SKELETONSTRENGTH ASKELETONIDLE
 // add random chance to do some special attack
 // add custom palette versions?
 // see minecraft mod
+// fix shrinker effect
+// 
 
 /*
   ifbulletnear

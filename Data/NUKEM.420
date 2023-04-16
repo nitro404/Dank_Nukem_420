@@ -450,10 +450,6 @@ define JIBS2 2250
 define JIBS3 2255
 define JIBS4 2260
 define JIBS5 2265
-// TODO: add bone images:
-define BONE1 2245
-define BONE2 2250
-define BONE3 2255
 define BURNING 2270
 define FIRE 2271
 define JIBS6 2286
@@ -844,12 +840,9 @@ define DUKE_BREATHING                  23
 define DUKE_EXHALING                   24
 define DUKE_GASP                       25
 define SLIM_RECOG                      26
-define DOOT                            27
 define DUKE_URINATE                    28
 define ENDSEQVOL3SND2                  29
 define ENDSEQVOL3SND3                  30
-define SKELETON_HIT                    31
-define SKELETON_DIE                    32
 define DUKE_CRACK                      33
 define SLIM_ATTACK                     34
 define SOMETHINGHITFORCE               35
@@ -861,7 +854,6 @@ define DUKE_ONWATER                    40
 define DUKE_DEAD                       41
 define DUKE_LAND                       42
 define DUKE_WALKINDUCTS                43
-define SKELETON_SLAP                   44
 define DUKE_YES                        45
 define DUKE_HEHE                       46
 define DUKE_SHUCKS                     47

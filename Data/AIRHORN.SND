@@ -492,9 +492,3 @@ definesound HORNSND                shorn1.voc      0   0   255  2    0
 definesound BELLSND                sbell1a.voc     0   0   255  2    0
 definesound GOAWAY                 goaway.voc      0   0    4   0    0
 definesound JOKE                   joke.voc        0   0   128  0    0
-
-// Skeleton
-definesound DOOT                   DOOT.WAV        0   0    3   0   512
-definesound SKELETON_HIT           SKELEHIT.WAV    0   0    3   0   512
-definesound SKELETON_DIE           SKELEDIE.WAV    0   0    3   0   512
-definesound SKELETON_SLAP          SKELSLAP.WAV    0   0    3   0   512
