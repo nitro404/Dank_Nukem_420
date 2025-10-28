@@ -38,7 +38,7 @@
   "homepage": "https://github.com/nitro404/Dank_Nukem_420#readme",
   "dependencies": {
     "duke3d-group": "^1.0.2",
-    "extra-utilities": "^1.3.6",
+    "extra-utilities": "^1.3.7",
     "fs-extra": "^9.0.1",
     "path-extra": "^4.3.0"
   }
